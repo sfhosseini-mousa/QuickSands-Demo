@@ -7,7 +7,8 @@ using UnityEngine;
 namespace Sands {
     public abstract class Hero : MonoBehaviour {
         //unit values
-        
+
+        private string heroName;
         private int damage;
         private int critChance;
         private int maxHP;
@@ -15,9 +16,9 @@ namespace Sands {
         private int capacity;
         private int skinTire;
         
-      
+        
+        //constructor
         public Hero(int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire) {
-    
             this.damage = damage;
             this.critChance = critChance;
             this.maxHP = maxHP;
@@ -26,6 +27,7 @@ namespace Sands {
             this.skinTire = skinTire;
         }
 
+        //copy constructor
         public Hero(Hero hero) {
     
             this.damage = hero.Damage;
@@ -36,6 +38,7 @@ namespace Sands {
             this.skinTire = hero.SkinTire;
         }
 
+        //memento copy constructor
         public Hero(HeroMemento heroMemento)
         {
             this.damage = heroMemento.Damage;
@@ -46,11 +49,17 @@ namespace Sands {
             this.skinTire = heroMemento.SkinTire;
         }
 
+        //deducts from the HP of the hero
         public abstract bool TakeDamage(int dmg);
+        
+        //adds to the HP of the hero
         public abstract void Heal(int healAmount);
+
+        //sets the skin of the recieved prefab of the hero
         public abstract void setSkin(GameObject prefab);
        
         /////////// GETTERS AND SETTERS //////////
+        
         
 
         public int Damage {
@@ -85,6 +94,8 @@ namespace Sands {
                 return currentHP;
             }
             set {
+                if (value > MaxHP)
+                    value = MaxHP;
                 currentHP = value;
             }
         }
@@ -110,14 +121,28 @@ namespace Sands {
             }
         }
 
-        public int getDamageWithCrit()
+        public int getDamageWithCrit(ref bool isCrit)
         {
+
             int random = UnityEngine.Random.Range(1, 100);
-            if(random <= CritChance)
-                return Damage*2;
+            if (random <= CritChance)
+            {
+
+                isCrit = true;
+                return Damage * 2;
+            }
             else
-              return Damage;
+            {
+                isCrit = false;
+                return Damage;
+            }
+
         }
-        
+
+        public int getDamag()
+        {
+                return Damage;
+        }
+
     }
 }

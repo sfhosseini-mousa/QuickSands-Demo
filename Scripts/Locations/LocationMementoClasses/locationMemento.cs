@@ -14,6 +14,7 @@ namespace Sands
         private int[] nearbyTowns;
         private int territory;
 
+        //copy constructor
         public LocationMemento(Location location)
         {
             this.id = location.Id;

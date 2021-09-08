@@ -18,8 +18,10 @@ namespace Sands
             this.Capacity = HeroClassDB.heroes[0].Capacity;
         }
 
+        //memento copy constructor
         public Warrior(WarriorMemento warriorMemento) : base(warriorMemento){ }
 
+        //copy constructor
         public Warrior(Warrior warrior) : base(warrior){ }
 
         public override bool TakeDamage(int dmg)
@@ -44,6 +46,7 @@ namespace Sands
                 CurrentHP = MaxHP;
         }
 
+        //sets the skin of the recieved prefab of the hero
         public override void setSkin(GameObject prefab)
         {
             var skeletonMecanim = prefab.GetComponent<SkeletonMecanim>();

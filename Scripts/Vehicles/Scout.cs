@@ -7,8 +7,9 @@ namespace Sands
 {
     public class Scout : Vehicle   //2 seater vehicle
     {
-        public Scout(string name, int id, int maxHP, int currentHP, int speed, int buttspace, int capacity, int price) : base(name, id, maxHP, currentHP, speed, buttspace, capacity, price) { }
+        public Scout(string name, int id, int maxHP, int currentHP, int speed, int buttspace, int capacity, int price, int fuelAmount) : base(name, id, maxHP, currentHP, speed, buttspace, capacity, price, fuelAmount) { }
 
+        //memento copy constructor
         public Scout(VehicleMemento vehicleMemento) : base(vehicleMemento){ }
 
         void Awake()
@@ -22,6 +23,7 @@ namespace Sands
                 this.Capacity = VehicleClassDB.getVehicle(0).Capacity;
                 this.Price = VehicleClassDB.getVehicle(0).Price;
                 this.SumHP = VehicleClassDB.getVehicle(0).CurrentHP;
+                this.Fuel = VehicleClassDB.getVehicle(0).Fuel;
         }
 
     }

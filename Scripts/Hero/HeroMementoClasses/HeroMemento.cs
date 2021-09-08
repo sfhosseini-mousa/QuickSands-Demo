@@ -14,6 +14,7 @@ namespace Sands
         private int capacity;
         private int skinTire;
 
+        //Copy comstructor
         public HeroMemento(Hero hero)
         {
             this.damage = hero.Damage;

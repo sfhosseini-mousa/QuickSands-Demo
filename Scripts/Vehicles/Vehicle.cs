@@ -14,11 +14,14 @@ namespace Sands {
         private int capacity;
         private int price;
         private int sumHP;
+        private int fuel;
 
   private List<Transform> passangers;
 
         public Vehicle(){}
-        public Vehicle(string name, int id, int vehicleHP, int currentHP, int speed, int partySize, int capacity, int price)
+
+        //full argument constructor
+        public Vehicle(string name, int id, int vehicleHP, int currentHP, int speed, int partySize, int capacity, int price, int fuel)
         {
             this.name = name;
             this.id = id;
@@ -29,9 +32,11 @@ namespace Sands {
             this.capacity = capacity;
             this.price = price;
             this.sumHP = currentHP;
+            this.fuel = fuel;
             this.passangers = new List<Transform>();
         }
 
+        //copy constructor
         public Vehicle(Vehicle vehicle)
         {
             this.name = vehicle.Name;
@@ -43,9 +48,11 @@ namespace Sands {
             this.capacity = vehicle.Capacity;
             this.price = vehicle.Price;
             this.sumHP = vehicle.currentHP;
+            this.fuel = vehicle.Fuel;
             this.passangers = new List<Transform>();
         }
 
+        //memento copy constructor
         public Vehicle(VehicleMemento vehicleMemento)
         {
             this.name = vehicleMemento.Name;
@@ -57,6 +64,7 @@ namespace Sands {
             this.capacity = vehicleMemento.Capacity;
             this.price = vehicleMemento.Price;
             this.sumHP = vehicleMemento.SumHP;
+            this.fuel = vehicleMemento.Fuel;
             this.passangers = new List<Transform>();
         }
 
@@ -217,5 +225,23 @@ namespace Sands {
                 price = value;
             }
         }
+
+        public int Fuel
+        {
+            
+            get
+            {
+                return fuel;
+            }
+
+
+            set
+            {
+                fuel = value;
+            }
+
+        }
+
+
     }
 }

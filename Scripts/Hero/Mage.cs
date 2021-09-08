@@ -19,8 +19,10 @@ namespace Sands
             this.Capacity = HeroClassDB.heroes[1].Capacity;
         }
 
+        //memento copy constructor
         public Mage(MageMemento mageMemento) : base(mageMemento){ }
 
+        //copy constructor
         public Mage(Mage mage) : base(mage){ }
 
         public override bool TakeDamage(int dmg)
@@ -44,6 +46,8 @@ namespace Sands
             if (CurrentHP > MaxHP)
                 CurrentHP = MaxHP;
         }
+
+        //sets the skin of the recieved prefab of the hero
         public override void setSkin(GameObject prefab)
         {
             var skeletonMecanim = prefab.GetComponent<SkeletonMecanim>();

@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//COMMENTED BY FARAMARZ HOSSEINI
+
+
 namespace Sands
 {
-
-    public class Location : MonoBehaviour
+    [System.Serializable]
+    public class Location
     {
 
         private int id;
@@ -16,7 +19,10 @@ namespace Sands
         private int territory;
         private List<double> tradePrices;
 
+        //default constructor
         public Location() { }
+
+        //6 argument constructor
         public Location(int id, string locationName, double latitude, double longitude, int territory, int[] nearbyTowns)
         {
             this.id = id;
@@ -28,6 +34,7 @@ namespace Sands
             this.tradePrices = new List<double>();
         }
 
+        //memento copy constructor
         public Location(LocationMemento locationMemento)
         {
             this.id = locationMemento.Id;

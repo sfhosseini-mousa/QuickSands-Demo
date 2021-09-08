@@ -1,11 +1,7 @@
-﻿
-
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-
+//COMMENTED BY FARAMARZ HOSSEINI
 
 
 public class MoveDataWindow : MonoBehaviour
@@ -15,19 +11,11 @@ public class MoveDataWindow : MonoBehaviour
     [SerializeField] private Camera cam;
     private GameObject tradeTip;
 
-    Vector3 position;
-
     private void Start(){
-
         StartCoroutine(Deactivate());
     }
 
-
-    private void Update()
-    {
-      
-    }
-
+    //set tradetip inactive after 0.2 seconds to have it filled in first
     IEnumerator Deactivate(){
         tradeTip = GameObject.FindGameObjectWithTag("tradeTip");
         yield return new WaitForSeconds(0.2f);

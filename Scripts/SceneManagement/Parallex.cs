@@ -1,31 +1,58 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+
+//COMMENTED BY FARAMARZ HOSSEINI
+
 
 public class Parallex : MonoBehaviour {
 
-    private float length, startpos;
-    public GameObject cam;
-    public float parallaxEffect;
     
-    // Start is called before the first frame update
-    void Start() {
+    private Material material;
+    private Vector2 offset;
+    [SerializeField] private float xVelocity, yVelocity;
+    private static bool shouldMove = false;                 //if true the material moves and repeats
 
-        startpos = transform.position.x;
-        length = GetComponent<SpriteRenderer>().bounds.size.x;
-        
+    void Awake() {
+        material = GetComponent<Renderer>().material;
     }
 
-    // Update is called once per frame
+    private void Start()
+    {
+        //preventing the creation of a save file in the main menu
+        if (File.Exists(Application.persistentDataPath + "/player.savefile"))
+        {
+            Sands.Player.LoadPlayer();
+            if (!Sands.Player.HasVehicle)
+                xVelocity -= 0.15f;
+        }
+
+        offset = new Vector2(xVelocity, yVelocity);
+    }
+
     void Update() {
+        //moves the material by offset amount
+        if (ShouldMove)
+        {
+            material.mainTextureOffset += offset * Time.deltaTime;
+        }
+    }
 
-        float temp = (cam.transform.position.x * (1 - parallaxEffect));
-        float dist = (cam.transform.position.x * parallaxEffect);
+    public static bool ShouldMove
+    {
+        get
+        {
+            return shouldMove;
+        }
+        set
+        {
+            shouldMove = value;
+        }
+    }
 
-        transform.position = new Vector3(startpos + dist, transform.position.y, transform.position.z);
-
-        if (temp > startpos + length) startpos += length;
-        else if (temp < startpos - length) startpos -= length;
-
+    private void OnDestroy()
+    {
+        shouldMove = false;
     }
 }

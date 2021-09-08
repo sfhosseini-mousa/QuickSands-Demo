@@ -11,13 +11,13 @@ namespace Sands {
         static VehicleClassDB() 
         {
             vehicles = new List<Vehicle>() {
-                // int id, int maxHP, int currentHP, int speed, int partySize, int capacity, int price
+                // int id, int maxHP, int currentHP, int speed, int partySize, int capacity, int price, fuel
                 
                 //NEXT TIME BALANCE THESE
-                   new Scout("Scout", 1, 100, 100, 100, 2, 500, 5000),
-                   new Warthog("Warthog", 2, 300, 300, 70, 3, 1000, 10000),
-                   new Goliath("Goliath", 3, 500, 500, 80, 4, 1500, 20000),
-                   new Leviathan("Leviathan", 4, 800, 800, 60, 5, 2500, 30000)
+                   new Scout("Scout", 1, 100, 100, 100, 2, 500, 5000, 1),
+                   new Warthog("Warthog", 2, 300, 300, 70, 3, 1000, 10000, 1),
+                   new Goliath("Goliath", 3, 500, 500, 80, 4, 1500, 20000, 1),
+                   new Leviathan("Leviathan", 4, 800, 800, 60, 5, 2500, 30000, 2)
             };
         }
         
@@ -36,5 +36,7 @@ namespace Sands {
         public static void clearVehicleList() {
             vehicles.Clear();
         }
+
+       
     }
 }

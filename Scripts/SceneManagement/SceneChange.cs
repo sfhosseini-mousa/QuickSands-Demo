@@ -4,26 +4,32 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 
+//COMMENTED BY FARAMARZ HOSSEINI
+
+
+//has all the scene transitions
 public class SceneChange : MonoBehaviour
 {
-  public void NewGame()
-  {
-    File.Delete(Application.persistentDataPath + "/player.savefile");
-    Sands.SaveSystem.Pdata = new Sands.PlayerData();
-    Sands.SaveSystem.LoadAll();
-    Sands.SaveSystem.SaveAll();
-    SceneManager.LoadScene("CharSelect");
-  }
+    [SerializeField] LevelLoader levelLoader; 
 
-  public void NewGame2()
+    public void NewGame() {
+        File.Delete(Application.persistentDataPath + "/player.savefile");
+        Sands.SaveSystem.Pdata = new Sands.PlayerData();
+        Sands.SaveSystem.LoadAll();
+        Sands.SaveSystem.SaveAll();
+        StartCoroutine(LoadLevel("CharSelect"));
+    }
+
+    //called with new game but if there is a save file doesn't do anything
+    public void NewGame2()
     {
       if(!File.Exists(Application.persistentDataPath + "/player.savefile"))
-          SceneManager.LoadScene("CharSelect");
+            StartCoroutine(LoadLevel("CharSelect"));
     }
 
   public void warning()
     {
-        SceneManager.LoadScene("SaveWarning");
+        StartCoroutine(LoadLevel("SaveWarning"));
     }
 
     public void QuitGame() {
@@ -31,64 +37,76 @@ public class SceneChange : MonoBehaviour
         Application.Quit();
     }
 
+    //if the player quit during a travel loads back to travel
     public void characterSelected() {
-
-        SceneManager.LoadScene("Town");
+        Sands.BattleSaver.LoadBattle();
+        if(Sands.BattleSaver.IsInTravel)
+            StartCoroutine(LoadLevel("Travel"));
+        else
+            StartCoroutine(LoadLevel("Town"));
     }
 
     public void BlackSmithSelected()
     {
 
-        SceneManager.LoadScene("BlackSmith");
+        StartCoroutine(LoadLevel("BlackSmith"));
     }
 
     public void TradeGoodsSelected()
     {
 
-        SceneManager.LoadScene("TradeGoods");
+        StartCoroutine(LoadLevel("TradeGoods"));
     }
 
     public void InnSelected()
     {
 
-        SceneManager.LoadScene("Inn");
+        StartCoroutine(LoadLevel("Inn"));
     }
 
     public void QuestBoardSelected()
     {
 
-        SceneManager.LoadScene("QuestBoard");
+        StartCoroutine(LoadLevel("QuestBoard"));
     }
 
     public void ShipShopSelected()
     {
 
-        SceneManager.LoadScene("ShipShop");
+        StartCoroutine(LoadLevel("ShipShop"));
     }
 
     public void InventorySelected()
     {
 
-        SceneManager.LoadScene("InvManager");
+        StartCoroutine(LoadLevel("InvManager"));
     }
 
     public void MapSelected()
     {
-        SceneManager.LoadScene("Map");
+        StartCoroutine(LoadLevel("Map"));
     }
 
     public void MapCloseSelected()
     {
-        SceneManager.LoadScene("Town");
+        StartCoroutine(LoadLevel("Town"));
     }
 
     public void ReturnToTownSelected()
     {
-        SceneManager.LoadScene("Town");
+        StartCoroutine(LoadLevel("Town"));
     }
 
     public void MainMenuSelected()
     {
-        SceneManager.LoadScene("Main Menu");
+        StartCoroutine(LoadLevel("Main Menu"));
+    }
+
+    //scene fading transition
+    IEnumerator LoadLevel(string sceneName)
+    {
+        levelLoader.StartTransition();
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene(sceneName);
     }
 }

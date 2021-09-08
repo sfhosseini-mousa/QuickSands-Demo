@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
 namespace Sands
 {
+    //this class holds the amount of each tradable in the inventory
     [System.Serializable]
     public class InventoryTradeable
     {
@@ -12,7 +8,7 @@ namespace Sands
         int count;
 
         public InventoryTradeable(Tradeable tradeable, int count){
-            this.ownedTradeable = tradeable;
+            ownedTradeable = tradeable;
             this.count = count;
         }
 

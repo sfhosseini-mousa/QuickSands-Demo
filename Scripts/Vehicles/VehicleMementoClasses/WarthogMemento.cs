@@ -7,6 +7,7 @@ namespace Sands
     [System.Serializable]
     public class WarthogMemento : VehicleMemento
     {
+        //copy constructor
         public WarthogMemento(Vehicle warthog) : base(warthog)
         {
             

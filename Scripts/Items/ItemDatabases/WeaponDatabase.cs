@@ -35,7 +35,18 @@ namespace Sands
                 new Weapon(13, 20, "Elm Staff", 5, 40.0, 1),
                 new Weapon(14, 25, "Oak Wand", 1, 80.0, 1),
                 new Weapon(15, 50, "Obsidian Staff", 5, 160.0, 1),
-                new Weapon(16, 60, "Magnum Opus", 10, 500.0, 1)
+
+                new Weapon(16, 10, "Mage's Orb", 1, 10.0, 1),
+                new Weapon(17, 15, "Elm Wand", 1, 20.0, 1),
+                new Weapon(18, 20, "Elm Staff", 5, 40.0, 1),
+                new Weapon(19, 25, "Oak Wand", 1, 80.0, 1),
+                new Weapon(20, 50, "Obsidian Staff", 5, 160.0, 1),
+
+                new Weapon(21, 10, "Mage's Orb", 1, 10.0, 1),
+                new Weapon(22, 15, "Elm Wand", 1, 20.0, 1),
+                new Weapon(23, 20, "Elm Staff", 5, 40.0, 1),
+                new Weapon(24, 25, "Oak Wand", 1, 80.0, 1),
+                new Weapon(25, 50, "Obsidian Staff", 5, 160.0, 1),
             };
         }
 

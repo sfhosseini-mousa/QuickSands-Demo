@@ -37,6 +37,18 @@ namespace Sands
                 new Armor(13, 10, "Cloth Robes", 1, 50.0, 2),
                 new Armor(14, 15, "Voluminous Robes", 5, 80.0, 2),
                 new Armor(15, 20, "Drapes of the Profligate Seer", 10, 500.0, 2),
+
+                new Armor(16, 1, "Torn Doublet", 1, 10.0, 2),
+                new Armor(17, 5, "Hermit's Old Robes", 1, 20.0, 2),
+                new Armor(18, 10, "Cloth Robes", 1, 50.0, 2),
+                new Armor(19, 15, "Voluminous Robes", 5, 80.0, 2),
+                new Armor(20, 20, "Drapes of the Profligate Seer", 10, 500.0, 2),
+
+                new Armor(21, 1, "Torn Doublet", 1, 10.0, 2),
+                new Armor(22, 5, "Hermit's Old Robes", 1, 20.0, 2),
+                new Armor(23, 10, "Cloth Robes", 1, 50.0, 2),
+                new Armor(24, 15, "Voluminous Robes", 5, 80.0, 2),
+                new Armor(25, 20, "Drapes of the Profligate Seer", 10, 500.0, 2),
             };
         }
         //get Armor at position

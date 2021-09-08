@@ -7,6 +7,7 @@ namespace Sands
     [System.Serializable]
     public class LeviathanMemento : VehicleMemento
     {
+        //copy constructor
         public LeviathanMemento(Vehicle leviathan) : base(leviathan)
         {
 

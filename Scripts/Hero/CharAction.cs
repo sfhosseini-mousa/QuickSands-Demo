@@ -74,7 +74,7 @@ namespace Sands {
             charAnim.AttackAnim();
 
             //call a function from BattleSystem to calculate damage
-            BattleSystem2.instance.CalculateDamage();
+            StartCoroutine(BattleSystem2.instance.CalculateDamage());
 
             attackEndTime = Time.time + .8f;
 
@@ -97,7 +97,6 @@ namespace Sands {
             charAnim.HealAnim();
         
             //calculate the healing
-            BattleSystem2.instance.CalculateHeal();
 
             healEndTime = Time.time + .5f;
 

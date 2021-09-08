@@ -12,11 +12,11 @@ namespace Sands
         void Awake()
         {
 
-            this.Damage = HeroClassDB.heroes[4].Damage;
-            this.CritChance = HeroClassDB.heroes[4].CritChance;
-            this.MaxHP = HeroClassDB.heroes[4].MaxHP;
-            this.CurrentHP = HeroClassDB.heroes[4].CurrentHP;
-            this.Capacity = HeroClassDB.heroes[4].Capacity;
+            this.Damage = HeroClassDB.heroes[6].Damage;
+            this.CritChance = HeroClassDB.heroes[6].CritChance;
+            this.MaxHP = HeroClassDB.heroes[6].MaxHP + 200;
+            this.CurrentHP = HeroClassDB.heroes[6].CurrentHP + 200;
+            this.Capacity = HeroClassDB.heroes[6].Capacity;
         }
 
         
@@ -43,6 +43,7 @@ namespace Sands
                 CurrentHP = MaxHP;
         }
 
+        //sets the skin of the recieved prefab of the hero
         public override void setSkin(GameObject prefab)
         {
             var skeletonMecanim = prefab.GetComponent<SkeletonMecanim>();

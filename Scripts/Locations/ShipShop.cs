@@ -3,41 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sands{
+//COMMENTED BY FARAMARZ HOSSEINI
+
+
+namespace Sands
+{
     public class ShipShop : MonoBehaviour
     {
-        [SerializeField] private GameObject buyBtn;
-        [SerializeField] private GameObject upgradeBtn;
-        [SerializeField] private Transform playerVehiclePosition;
-        [SerializeField] private Transform upgradeVehiclePosition;
         private GameObject playerVehiclePrefab;
         private GameObject upgradeVehiclePrefab;
         private Transform instantiatedPlayerVehicle;
         private Transform instantiatedUpgradeVehicle;
-        private int price;
-        private Vehicle upgradeVehicle;
-        [SerializeField] private Text money;
-        [SerializeField] private Text currentVehicleHp;
-        [SerializeField] private Text currentVehicleCargo;
-        [SerializeField] private Text currentVehicleName;
-        [SerializeField] private Text upgradeVehicleHp;
-        [SerializeField] private Text upgradeVehicleCargo;
-        [SerializeField] private Text upgradeVehiclePrice;
-        [SerializeField] private Text upgradeVehicleName;
-        [SerializeField] private GameObject[] currentVehicleStats = new GameObject[6];
-        [SerializeField] private GameObject[] upgradeVehicleStats = new GameObject[8];
+        private int price;                              //price of the upgrade
+        private Vehicle upgradeVehicle;                 //the next vehicle to upgrade to
 
+        [SerializeField] private GameObject buyBtn;////////////////////////////////////////////////////////////
+        [SerializeField] private GameObject upgradeBtn;                                                      //
+        [SerializeField] private Transform playerVehiclePosition;                                            //
+        [SerializeField] private Transform upgradeVehiclePosition;                                           //
+        [SerializeField] private Text money;                                                                 //
+        [SerializeField] private Text currentVehicleHp;                                                      //
+        [SerializeField] private Text currentVehicleCargo;           //reference to objects in the scene     //
+        [SerializeField] private Text currentVehicleName;                                                    //
+        [SerializeField] private Text upgradeVehicleHp;                                                      //
+        [SerializeField] private Text upgradeVehicleCargo;                                                   //
+        [SerializeField] private Text upgradeVehiclePrice;                                                   //
+        [SerializeField] private Text upgradeVehicleName;                                                    //
+        [SerializeField] private GameObject[] currentVehicleStats = new GameObject[6];                       //
+        [SerializeField] private GameObject[] upgradeVehicleStats = new GameObject[8];                       //
+        [SerializeField] private GameObject[] bannerLocations;/////////////////////////////////////////////////
+                                                                                                             
         void Start()
         {
-
-            PlayerInventory.LoadPlayerInventory();
-            PlayerInventory.Money += 100000;
             money.text = System.Convert.ToString(PlayerInventory.Money);
-            PlayerInventory.SavePlayerInventory();
+
             upgradeBtn.SetActive(false);
             buyBtn.SetActive(false);
+            InstantiateBanners();
 
-            if(Player.HasVehicle)
+            //if player has a vehicle set its stats and show the upgrade button
+            if (Player.HasVehicle)
             {
                 SetCurrentVehicleStats();
                 upgradeBtn.SetActive(true);
@@ -45,6 +50,7 @@ namespace Sands{
                 if(Player.CurrentVehicle.Name != "Leviathan")
                     SetUpgradeVehicleStats();
             }
+            //if not instantiate the first vehicle and activate the buy button
             else
             {
                 foreach (var item in currentVehicleStats)
@@ -62,7 +68,7 @@ namespace Sands{
         }
 
         
-
+        //based on the name of player's current vehicle loads it in the scene
         public void InstantiateVehicles(){
             switch (Player.CurrentVehicle.Name)
             {
@@ -116,12 +122,15 @@ namespace Sands{
         }
 
         public void upgradeBtnOnClick(){
+            //player has to have enough money
             if(PlayerInventory.Money >= price)
             {
+                //deduct the money
                 PlayerInventory.Money -= price;
                 money.text = System.Convert.ToString(PlayerInventory.Money);
                 PlayerInventory.SavePlayerInventory();
                 
+                //give the player their new vehicle
                 if(Player.HasVehicle){
                     Destroy(instantiatedUpgradeVehicle.gameObject);
                     Destroy(instantiatedPlayerVehicle.gameObject);
@@ -152,12 +161,43 @@ namespace Sands{
                     }
                 }
                 Player.SavePlayer();
+
+                //change the current and upgrade vehicles
                 InstantiateVehicles();
                 SetCurrentVehicleStats();
                 SetUpgradeVehicleStats();
             }
             else{
-                //no money? sorry baby
+                //no money
+            }
+        }
+
+        //loads the right banners into the scene
+        void InstantiateBanners()
+        {
+            GameObject banner = null;
+
+            switch (Player.CurrentLocation.Territory)
+            {
+                case 1:
+                    banner = (GameObject)Resources.Load("BannerBlue", typeof(GameObject));
+                    break;
+                case 3:
+                    banner = (GameObject)Resources.Load("BannerRed", typeof(GameObject));
+                    break;
+                case 2:
+                    banner = (GameObject)Resources.Load("BannerGreen", typeof(GameObject));
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (var loc in bannerLocations)
+            {
+                GameObject instantiatedBanner = Instantiate(banner);
+                instantiatedBanner.transform.position = loc.transform.position;
+                instantiatedBanner.transform.localScale = new Vector3(3f, 3f, 3f);
+    
             }
         }
     }

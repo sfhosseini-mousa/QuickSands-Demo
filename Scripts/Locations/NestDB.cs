@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//COMMENTED BY FARAMARZ HOSSEINI
+
+
 namespace Sands {
     public static class NestDB {
 
-        private static List<Nest> nests = new List<Nest>();
-
+        private static List<Nest> nests;
+        private static bool[] hasBeatenBoss;        //used for the buffs, saves whether the player has beaten each of the bosses
 
         static NestDB() 
         {
             //int id, string name, double lattitude, double longtitude, int territory, int[] nearbyTowns //multiplier
             nests = new List<Nest>() {
-               
-                new Nest(1, "Black Rock", 100, 100, 1, new int[]{2},1,false),
-                new Nest(2, "Infested Ruins", 100,100, 2, new int[]{1, 5, 10},2,false),               
-                new Nest(3, "Swarming Mines", 100,100, 3, new int[]{9, 7, 2},3,false)
-            
-
+                //Demon
+                new Nest(1, "Infernal Maw", 100, 100, 2, new int[]{4},1,false),
+                //Dragon
+                new Nest(2, "Wyrms Peak", 100,100, 3, new int[]{8},2,false),               
+                //Golem
+                new Nest(3, "Seared Rock", 100,100, 1, new int[]{2},3,false)
             };
         }
     
@@ -36,11 +39,13 @@ namespace Sands {
             nests.Clear();
         }
 
+        //save data to the save file
         public static void SaveNests() {
 
             SaveSystem.SaveNests();
         }
 
+        //load data from the save file
         public static void LoadNests() {
 
             PlayerData data = SaveSystem.LoadNests();
@@ -49,6 +54,14 @@ namespace Sands {
             {
                 nests.Add(new Nest(nest));
             }
+
+            hasBeatenBoss = data.HasBeatenBoss;
+        }
+
+        public static bool[] HasBeatenBoss
+        {
+            get { return hasBeatenBoss; }
+            set { hasBeatenBoss = value; }
         }
     }
 }

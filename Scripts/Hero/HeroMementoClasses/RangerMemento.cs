@@ -7,6 +7,7 @@ namespace Sands
     [System.Serializable]
     public class RangerMemento : HeroMemento
     {
+        //Copy comstructor
         public RangerMemento(Ranger ranger) : base(ranger)
         {
             

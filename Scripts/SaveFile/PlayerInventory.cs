@@ -1,5 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+
+//COMMENTED BY FARAMARZ HOSSEINI
+
 
 namespace Sands
 {
@@ -7,6 +9,8 @@ namespace Sands
     {
         private static List<InventoryTradeable> tradeableInventory;
         private static double money;
+
+        //fills player inventory with InventoryTradeable objects for each tradeable
         static PlayerInventory(){
             tradeableInventory = new List<InventoryTradeable>(){
                 new InventoryTradeable(TradeableDatabase.getTradeable(0), 0),
@@ -23,7 +27,7 @@ namespace Sands
             money = 0;
         }
 
-        //adding items to lists based on type
+        //adding items to inventory based on id
         public static void AddToInventory(int tradeableId, int count){
             foreach (var tradeable in tradeableInventory)
             {
@@ -33,6 +37,7 @@ namespace Sands
             }
         }
 
+        //removing items from inventory lists based on id
         public static void RemoveFromInventory(int tradeableId, int count){
             foreach (var tradeable in tradeableInventory)
             {
@@ -42,11 +47,13 @@ namespace Sands
             }
         }
 
+        //saves player's inventory to the save file
         public static void SavePlayerInventory() {
 
             SaveSystem.SavePlayerInventory();
         }
 
+        //loads player's inventory from the save file
         public static void LoadPlayerInventory() {
 
             PlayerData data = SaveSystem.LoadPlayerInventory();

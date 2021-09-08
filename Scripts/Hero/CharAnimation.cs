@@ -11,27 +11,36 @@ namespace Sands {
 
         public Animator anim;
 
-        // Start is called before the first frame update
         void Start() {
             anim = GetComponent<Animator>();
         
         }
         
+        //run attack animation
         public void AttackAnim() {
             
             anim.SetTrigger("Attack");
         }
 
+        //run skill animation
         public void HealAnim() {
 
             anim.SetTrigger("Skill");
         }
 
+        //run hit animation
+        public void HitAnim()
+        {
+            anim.SetTrigger("Hit");
+        }
+
+        //run running animation
         public void RunningAnim() {
 
             anim.SetBool("Running", true);
         }
-        
+
+        //run idle animation
         public void IdleAnim() {
             
             anim.SetBool("Running", false);

@@ -12,11 +12,11 @@ namespace Sands
         void Awake()
         {
 
-            this.Damage = HeroClassDB.heroes[3].Damage;
-            this.CritChance = HeroClassDB.heroes[3].CritChance;
-            this.MaxHP = HeroClassDB.heroes[3].MaxHP;
-            this.CurrentHP = HeroClassDB.heroes[3].CurrentHP;
-            this.Capacity = HeroClassDB.heroes[3].Capacity;
+            this.Damage = HeroClassDB.heroes[5].Damage;
+            this.CritChance = HeroClassDB.heroes[5].CritChance;
+            this.MaxHP = HeroClassDB.heroes[5].MaxHP + 200;
+            this.CurrentHP = HeroClassDB.heroes[5].CurrentHP + 200;
+            this.Capacity = HeroClassDB.heroes[5].Capacity;
         }
 
         public override bool TakeDamage(int dmg)
@@ -41,18 +41,8 @@ namespace Sands
                 CurrentHP = MaxHP;
         }
 
-        ////create a new skin class variable
-                ////assign a skin to it
-                ////add it's other attachments to the set
-                //Skin enemySkin = new Skin("enemySkin");
-                //Skin shadow = skeleton.skeleton.Data.FindSkin("e5");
-                //enemySkin.AddAttachments(shadow);
 
-                ////set the skin to the skeleton model
-                ////attach everything
-                //skeleton.skeleton.SetSkin(enemySkin);
-                //skeleton.skeleton.SetSlotsToSetupPose();
-
+        //sets the skin of the recieved prefab of the hero
         public override void setSkin(GameObject prefab)
         {
             var skeletonMecanim = prefab.GetComponent<SkeletonMecanim>();

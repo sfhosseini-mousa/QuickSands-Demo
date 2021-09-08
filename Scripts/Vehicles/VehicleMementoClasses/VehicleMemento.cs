@@ -16,9 +16,11 @@ namespace Sands
         private int capacity;
         private int price;
         private int sumHP;
+        private int fuel;
 
         public VehicleMemento(){}
 
+        //copy constructor
         public VehicleMemento(Vehicle vehicle)
         {
             this.name = vehicle.Name;
@@ -30,6 +32,7 @@ namespace Sands
             this.capacity = vehicle.Capacity;
             this.price = vehicle.Price;
             this.sumHP = vehicle.CurrentHP;
+            this.fuel = vehicle.Fuel;
         }
         
         public int SumHP
@@ -140,6 +143,18 @@ namespace Sands
             {
                 price = value;
             }
+        }
+
+        public int Fuel {
+
+            get
+            {
+                return fuel;
+            }
+            set 
+            {
+                fuel = value;        
+            } 
         }
     }
 }

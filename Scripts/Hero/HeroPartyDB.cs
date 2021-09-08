@@ -32,11 +32,13 @@ namespace Sands {
             heroParty.Add(hero);
         }
 
+        //saves the data into the save file
         public static void SaveParty() {
             Debug.Log("SaveParty");
             SaveSystem.SaveParty();
         }
 
+        //loads the data from the save file into the class
         public static void LoadParty() {
             
             PlayerData data = SaveSystem.LoadParty();
@@ -46,7 +48,6 @@ namespace Sands {
                 if (hero.GetType().Name.Equals("WarriorMemento"))
                 {
                     HeroPartyDB.heroParty.Add(new Warrior((WarriorMemento)hero));
-                    
                 }
                 else if (hero.GetType().Name.Equals("MageMemento"))
                 {
@@ -55,6 +56,14 @@ namespace Sands {
                 else if (hero.GetType().Name.Equals("RangerMemento"))
                 {
                     HeroPartyDB.heroParty.Add(new Ranger((RangerMemento)hero));
+                }
+                else if (hero.GetType().Name.Equals("SpearmanMemento"))
+                {
+                    HeroPartyDB.heroParty.Add(new Spearman((SpearmanMemento)hero));
+                }
+                else if (hero.GetType().Name.Equals("WizardMemento"))
+                {
+                    HeroPartyDB.heroParty.Add(new Wizard((WizardMemento)hero));
                 }
             }
         }

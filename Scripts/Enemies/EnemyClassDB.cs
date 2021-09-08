@@ -12,9 +12,13 @@ namespace Sands {
     static EnemyClassDB(){
         enemies = new List<Enemy>() {
            //int id, int damage, int critChance, int maxHealth, int currentHealth
-        new EnemyGround(1,200, 10, 750, 750),
-        new EnemyFlying(2,300, 25, 400, 400),
-        new EnemyBoss(3,750, 20, 5000, 5000)
+        new EnemyGround(1,100, 10, 200, 200),
+        new EnemyFlying(2,150, 20, 100, 100),
+        new DragonBoss(3,400, 20, 1500, 1500),
+        new DemonBoss(4,300, 30, 1000, 1000),
+        new FireGolemBoss(5,200, 10, 2000, 2000),
+        new EnemyMid(6,200, 15, 400, 400)
+
         };
     }
     

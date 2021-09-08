@@ -7,6 +7,7 @@ namespace Sands
     [System.Serializable]
     public class ScoutMemento : VehicleMemento
     {
+        //copy constructor
         public ScoutMemento(Vehicle scout) : base(scout)
         {
             
