@@ -30,6 +30,8 @@ namespace Sands
         [SerializeField] private Text errorText;                                //to show if player has no money or has max level
         [SerializeField] private AudioSource upgradeSound;                      //upgrading sound
 
+        [SerializeField] private Button upgradeButton;
+
         void Start()
         {
             //deactivate all the buttons
@@ -105,6 +107,11 @@ namespace Sands
             //sets the stats
             SetUpgradeHeroStats(selectedIndex);
             SetCurrentHeroStats(selectedIndex);
+
+            if (HeroPartyDB.getHero(selectedIndex).IsQuestHero == true)
+            upgradeButton.GetComponent<Selectable>().interactable = false;
+            else
+            upgradeButton.GetComponent<Selectable>().interactable = true;
         }
 
         //instantiates the clicked hero based on the index passed to it

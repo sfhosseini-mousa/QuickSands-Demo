@@ -52,6 +52,18 @@ namespace Sands
             wasInABattle = BattleSaver.IsInABattle;
             SetBackground();
             StartCoroutine(StartTiming());
+
+            ResetTownMusic();
+        }
+
+        void ResetTownMusic()
+        {
+            try
+            {
+                GameObject.FindGameObjectWithTag("Music").GetComponent<ContiniousMusic>().ResetMusic();
+            }
+            catch (Exception)
+            { }
         }
 
         //Sets up the Travel scene with precise timing
@@ -205,6 +217,8 @@ namespace Sands
                 PlayerInventory.SavePlayerInventory();
                 Parallex.ShouldMove = false;
 
+                BattleSystem2.hasHadABandit = false;
+
                 BattleSaver.IsInTravel = false;
                 BattleSaver.SaveBattle();
 
@@ -292,7 +306,26 @@ namespace Sands
 
             levelLoader.StartTransition();
             yield return new WaitForSeconds(0.5f);
+
+            LocationDB.ChangePrices();
+            LocationDB.ChangeItemStocks();
+
+            CheckTransportQuest();
+
             UnityEngine.SceneManagement.SceneManager.LoadScene("Town");
+        }
+
+        void CheckTransportQuest()
+        {
+            foreach (Quest quest in Player.AcceptedQuests)
+            {
+                if (quest.QuestName == "Transport")
+                {
+                    quest.Completed = true;
+                    ((TransportQuest)quest).RemoveQuestHero();
+                    Player.SavePlayer();
+                }
+            }
         }
 
         //Instantiates all the heroes and the vehicle into the scene

@@ -8,15 +8,16 @@ namespace Sands
 {
     public class Mage : Hero
     {
-        public Mage(int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire) : base(damage, critChance, maxHP, currentHP, capacity, skinTire) { }
+        public Mage(int id, int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire, bool isQuestHero) : base(id, damage, critChance, maxHP, currentHP, capacity, skinTire, isQuestHero) { }
         void Awake()
         {
-            
+            this.Id = HeroClassDB.heroes[1].Id;
             this.Damage = HeroClassDB.heroes[1].Damage;
             this.CritChance = HeroClassDB.heroes[1].CritChance;
             this.MaxHP = HeroClassDB.heroes[1].MaxHP;
             this.CurrentHP = HeroClassDB.heroes[1].CurrentHP;
             this.Capacity = HeroClassDB.heroes[1].Capacity;
+            this.IsQuestHero = HeroClassDB.heroes[1].IsQuestHero;
         }
 
         //memento copy constructor

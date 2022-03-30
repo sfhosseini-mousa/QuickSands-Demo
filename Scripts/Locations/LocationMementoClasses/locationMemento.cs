@@ -9,8 +9,7 @@ namespace Sands
     {
         private int id;
         private string locationName;
-        private double latitude;
-        private double longitude;
+        private int townTier;
         private int[] nearbyTowns;
         private int territory;
 
@@ -19,8 +18,7 @@ namespace Sands
         {
             this.id = location.Id;
             this.locationName = location.LocationName;
-            this.latitude = location.Latitude;
-            this.longitude = location.Longitude;
+            this.townTier = location.TownTier;
             this.nearbyTowns = location.NearbyTowns;
             this.territory = location.Territory;
         }
@@ -47,27 +45,18 @@ namespace Sands
             }
         }
 
-        public double Latitude
-        {
-            get 
-            {
-                return latitude;
-            }
-            set
-            {
-                latitude = value;
-            }
-        }
+        public int TownTier {
 
-        public double Longitude {
             get
             {
-                return longitude;
+                return townTier;
             }
             set
             {
-                longitude = value;
+                townTier = value;
             }
+
+
         }
 
         public int Territory

@@ -8,6 +8,7 @@ namespace Sands {
     public abstract class Hero : MonoBehaviour {
         //unit values
 
+        private int id;
         private string heroName;
         private int damage;
         private int critChance;
@@ -15,38 +16,44 @@ namespace Sands {
         private int currentHP;
         private int capacity;
         private int skinTire;
-        
-        
+        private bool isQuestHero;
+
+
         //constructor
-        public Hero(int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire) {
+        public Hero(int id, int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire, bool isQuestHero) {
+            this.id = id;
             this.damage = damage;
             this.critChance = critChance;
             this.maxHP = maxHP;
             this.currentHP = currentHP;
             this.capacity = capacity;
             this.skinTire = skinTire;
+            this.isQuestHero = isQuestHero;
         }
 
         //copy constructor
         public Hero(Hero hero) {
-    
+            this.id = hero.id;
             this.damage = hero.Damage;
             this.critChance = hero.CritChance;
             this.maxHP = hero.MaxHP;
             this.currentHP = hero.CurrentHP;
             this.capacity = hero.Capacity;
             this.skinTire = hero.SkinTire;
+            this.isQuestHero = hero.isQuestHero;
         }
 
         //memento copy constructor
         public Hero(HeroMemento heroMemento)
         {
+            this.id = heroMemento.Id;
             this.damage = heroMemento.Damage;
             this.critChance = heroMemento.CritChance;
             this.maxHP = heroMemento.MaxHP;
             this.currentHP = heroMemento.CurrentHP;
             this.capacity = heroMemento.Capacity;
             this.skinTire = heroMemento.SkinTire;
+            this.isQuestHero = heroMemento.IsQuestHero;    
         }
 
         //deducts from the HP of the hero
@@ -57,10 +64,21 @@ namespace Sands {
 
         //sets the skin of the recieved prefab of the hero
         public abstract void setSkin(GameObject prefab);
-       
+
         /////////// GETTERS AND SETTERS //////////
-        
-        
+
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
 
         public int Damage {
             get {
@@ -118,6 +136,18 @@ namespace Sands {
                     skinTire = 5;
                 else
                     skinTire = value;
+            }
+        }
+
+        public bool IsQuestHero
+        {
+            get
+            {
+                return isQuestHero;
+            }
+            set
+            {
+                isQuestHero = value;
             }
         }
 

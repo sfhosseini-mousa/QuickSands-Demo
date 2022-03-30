@@ -32,12 +32,13 @@ namespace Sands
         [SerializeField] private GameObject[] currentVehicleStats = new GameObject[6];                       //
         [SerializeField] private GameObject[] upgradeVehicleStats = new GameObject[8];                       //
         [SerializeField] private GameObject[] bannerLocations;/////////////////////////////////////////////////
-                                                                                                             
+                   
+        [SerializeField] private AudioSource buySound;
+
         void Start()
         {
             money.text = System.Convert.ToString(PlayerInventory.Money);
 
-            upgradeBtn.SetActive(false);
             buyBtn.SetActive(false);
             InstantiateBanners();
 
@@ -125,6 +126,8 @@ namespace Sands
             //player has to have enough money
             if(PlayerInventory.Money >= price)
             {
+                buySound.Play();
+
                 //deduct the money
                 PlayerInventory.Money -= price;
                 money.text = System.Convert.ToString(PlayerInventory.Money);

@@ -48,7 +48,7 @@ namespace Sands
                             StartCoroutine(DialoguePopUp("Did we do the right thing", EncounterSystem.InstantiatedHeroes[selectedHero].position));
                             break;
                         case 1:
-                            StartCoroutine(DialoguePopUp("I blame Andrew for that!", EncounterSystem.InstantiatedHeroes[selectedHero].position));
+                            StartCoroutine(DialoguePopUp("That guy deserved to be robbed!", EncounterSystem.InstantiatedHeroes[selectedHero].position));
                             break;
                         case 2:
                             StartCoroutine(DialoguePopUp("I feel bad about what we did", EncounterSystem.InstantiatedHeroes[selectedHero].position));

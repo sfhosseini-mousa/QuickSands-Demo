@@ -11,18 +11,18 @@ namespace Sands {
         {
             heroes = new List<Hero>() {
                 //adding all 3 types off heroes to sample class
-                //  int damage, int critChance, int maxHP, int currentHP, int capacity, skinTier
-                new Warrior(100, 10, 500, 500, 100, 1),
-                new Mage(   250, 15, 250, 250, 60, 1),
-                new Ranger( 100, 33, 350, 350, 75, 1),
-                new Wizard( 150, 10, 300, 300, 70, 1),
-                new Spearman(80, 20, 400, 400, 90, 1),
+                // int id, int damage, int critChance, int maxHP, int currentHP, int capacity, skinTier
+                new Warrior(1, 100, 10, 500, 500, 100, 1, false),
+                new Mage( 2, 250, 15, 250, 250, 60, 1, false),
+                new Ranger(3, 100, 33, 350, 350, 75, 1, false),
+                new Wizard(4, 150, 10, 300, 300, 70, 1, false),
+                new Spearman(5, 80, 20, 400, 400, 90, 1, false),
                 
-                new EnemyWarrior(40, 10, 250, 250, 100, 1),
-                new EnemyMage(   70, 15, 100, 100, 60, 1),
-                new EnemyRanger( 40, 33, 150, 150, 75, 1),
-                new EnemyWizard( 40, 33, 150, 150, 75, 1),
-                new EnemySpearman(40, 33, 150, 150, 75, 1)
+                new EnemyWarrior(6, 40, 10, 250, 250, 100, 1, false),
+                new EnemyMage(7, 70, 15, 100, 100, 60, 1, false),
+                new EnemyRanger(8, 40, 33, 150, 150, 75, 1, false),
+                new EnemyWizard(9, 40, 33, 150, 150, 75, 1, false),
+                new EnemySpearman(10, 40, 33, 150, 150, 75, 1, false)
             }; 
         }
 

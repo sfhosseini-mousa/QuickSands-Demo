@@ -292,7 +292,7 @@ namespace Sands
                 new InventoryTradeable(TradeableDatabase.getTradeable(8), 0),
                 new InventoryTradeable(TradeableDatabase.getTradeable(9), 0)
             };
-                pdata.PlayerMoney = 2000.0;
+                pdata.PlayerMoney = 10000.0;
                 return pdata;
             }
         }

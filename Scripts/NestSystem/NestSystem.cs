@@ -9,6 +9,9 @@ namespace Sands
 {
     public class NestSystem : MonoBehaviour
     {
+        [SerializeField] private AudioSource defeatMusic;       //defeat audio track
+        [SerializeField] private AudioSource victoryMusic;      //victory audio track
+
         private List<CharAction> charactersActions;
         private List<CharAction> playersCharActions;
         private Vehicle playerVehicle = new Vehicle();
@@ -103,6 +106,8 @@ namespace Sands
             }
 
             Invoke("StartSetup", 2.5f);
+
+            GameObject.FindGameObjectWithTag("Music").GetComponent<ContiniousMusic>().ResetMusic();
         }
 
         private void StartSetup()
@@ -1261,6 +1266,7 @@ namespace Sands
             }
             else if (battleState == BattleState2.LOST)
             {
+                defeatMusic.Play();
                 defeatPopUp.SetActive(true);
                 dialogueText.text = "You were defeated.";
             }
@@ -1269,6 +1275,7 @@ namespace Sands
         IEnumerator ViewVictoryPopUp()
         {
             yield return new WaitForSeconds(1f);
+            victoryMusic.Play();
             victoryPopUp.SetActive(true);
         }
 
@@ -1309,9 +1316,11 @@ namespace Sands
             StartCoroutine(PlayerTurn());
         }
 
+
+
         public IEnumerator MoveHeroVehicleIn(float countdownValue = 5f)
         {
-            
+
             while (countdownValue > 0)
             {
                 try
@@ -1320,7 +1329,7 @@ namespace Sands
                     {
                         if (instantiatedHeroVehicle.position != HeroVehicleBS.position)
                         {
-                            Vector3 newPos = Vector3.MoveTowards(instantiatedHeroVehicle.transform.position, HeroVehicleBS.position, 7f * Time.deltaTime * Screen.width / Screen.height);
+                            Vector3 newPos = Vector3.MoveTowards(instantiatedHeroVehicle.transform.position, HeroVehicleBS.position, 0.12f);
                             instantiatedHeroVehicle.transform.position = newPos;
                         }
                         else
@@ -1331,7 +1340,7 @@ namespace Sands
                     {
                         if (instantiatedHeroes[0].position != heroBSList[0].position)
                         {
-                            Vector3 newPos = Vector3.MoveTowards(instantiatedHeroes[0].transform.position, heroBSList[0].position, 3f * Time.deltaTime * Screen.width / Screen.height);
+                            Vector3 newPos = Vector3.MoveTowards(instantiatedHeroes[0].transform.position, heroBSList[0].position, 0.09f);
                             instantiatedHeroes[0].transform.position = newPos;
                         }
                         else
@@ -1349,8 +1358,8 @@ namespace Sands
             }
 
             Parallex.ShouldMove = true;
-            StopCoroutine(moveHeroVehicleInC);
         }
+
 
         private void MoveHeroAimation()
         {

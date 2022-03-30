@@ -12,9 +12,10 @@ namespace Sands
     public class TradeTip : MonoBehaviour
     {
         private GameObject tradeTip;
-        private Location hoveredLocation;                           //the location player hovers over
+        private Location clickedLocation;                           //the location player hovers over
         [SerializeField] private Text locationNameText;
         [SerializeField] private Text[] tradePrices = new Text[10]; //the prices as text in the scene
+        [SerializeField] private Text[] profitPrices = new Text[10]; //the profit of trades as text in the scene
         private Vector3 position;
         [SerializeField] private RectTransform TradeTipWindow;      //the position of the TradeTip window
         [SerializeField] private Text factionName;
@@ -26,55 +27,74 @@ namespace Sands
         }
 
         //when the player hovers over a town move tradeTip to the position
-        public void OnMouseOver()
+        public void OnLocationClick()
         {
             tradeTip.SetActive(true);
             locationNameText.text = name;
             foreach (var location in LocationDB.getLocationList())
             {
                 if (location.LocationName == name)
-                    hoveredLocation = location;
+                    clickedLocation = location;
             }
 
 
             var locationName = name;
             tradeTip.SetActive(true);
             
-            position = new Vector3(190f, -50f, 0f);
-            TradeTipWindow.localPosition = position;
 
-            for (int i = 0; i < hoveredLocation.TradePrices.Count; i++)
+            for (int i = 0; i < clickedLocation.TradePrices.Count; i++)
             {
-                tradePrices[i].text = System.Convert.ToString((int)(hoveredLocation.TradePrices[i] - hoveredLocation.TradePrices[i] * 15/100));
+                tradePrices[i].text = System.Convert.ToString((int)(clickedLocation.TradePrices[i] - clickedLocation.TradePrices[i] * 15/100));
             }
 
             //set the faction of tradeTip
-            if (hoveredLocation.Territory == 1)
+            if (clickedLocation.Territory == 1)
             {
                 factionName.text = "Republic of Veden";
-                factionName.color = Color.blue;
+                factionName.color = Color.blue;  //blue
             }
-            else if (hoveredLocation.Territory == 2)
+            else if (clickedLocation.Territory == 2)
             {
                 factionName.text = "Fara Empire";
                 factionName.color = Color.green;
             }
-            else if (hoveredLocation.Territory == 3)
+            else if (clickedLocation.Territory == 3)
             {
                 factionName.text = "The Kaiserreich";
                 factionName.color = Color.red;
             }
             else
                 factionName.text = "123 Fakestreet";
+
+
+            for (int i = 0; i < clickedLocation.TradePrices.Count; i++)
+            {
+
+                if (Player.CurrentLocation.LocationName == clickedLocation.LocationName)
+                {
+
+                    profitPrices[i].text = "";
+
+
+                }
+                else
+                {
+                    int profit = (int)(clickedLocation.TradePrices[i] - clickedLocation.TradePrices[i] * 15 / 100) - (int)LocationDB.getLocation(Player.CurrentLocation.Id - 1).TradePrices[i];
+                    profitPrices[i].text = System.Convert.ToString(profit);
+
+                    if (profit > 0)
+                    {
+                        profitPrices[i].text = "+" + profitPrices[i].text;
+                        profitPrices[i].color = Color.green;
+                    }
+                    else
+                    {
+                        profitPrices[i].color = Color.red;
+                    }
+
+                }
+            }
         }
-
-        //when mouse exits the town deactivate tradeTip
-        public void OnMouseExit()
-        {
-            tradeTip.SetActive(false);
-        }
-
-
     }
 
 }

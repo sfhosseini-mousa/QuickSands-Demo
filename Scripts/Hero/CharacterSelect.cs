@@ -11,6 +11,13 @@ namespace Sands
         [SerializeField] GameObject MainHeroBS;     //the position of the selected hero
         [SerializeField] GameObject Start;
 
+
+        [SerializeField] GameObject[] StatImage = new GameObject[6];
+
+        [SerializeField] Text AttackStat;
+        [SerializeField] Text HPStat;
+        [SerializeField] Text CritStat;
+
         private GameObject instantiatedCurrentHero; //stores the instantiated selected hero
         private GameObject hero;
 
@@ -18,6 +25,8 @@ namespace Sands
 
         //selects the chosen hero as a permanent choice
         public void SelectHeroButton() {
+
+          
 
             switch (selectedHero)
             {
@@ -42,6 +51,8 @@ namespace Sands
                     break;
             }
 
+           
+
             SetSavedVolumes();
 
             Player.SavePlayer();
@@ -58,48 +69,74 @@ namespace Sands
         //Instantiate Selected Hero to GameObject transform
         public void InstantiateWarrior()
         {
+
+            ActivateStats();
             Start.SetActive(true);
             selectedHero = 0;
             hero = (GameObject)Resources.Load("Warrior", typeof(GameObject));
             instantiatedCurrentHero = Instantiate(hero, MainHeroBS.transform.position, Quaternion.identity);
-            instantiatedCurrentHero.transform.localScale = new Vector3(150, 150, 150);
+            instantiatedCurrentHero.transform.localScale = new Vector3(120, 120, 120);
+
+            AttackStat.text = instantiatedCurrentHero.GetComponent<Hero>().Damage.ToString();
+            HPStat.text = instantiatedCurrentHero.GetComponent<Hero>().MaxHP.ToString();
+            CritStat.text = instantiatedCurrentHero.GetComponent<Hero>().CritChance.ToString();
+
         }
         public void InstantiateMage()
         {
+            ActivateStats();
             Start.SetActive(true);
             selectedHero = 1;
             hero = (GameObject)Resources.Load("Mage", typeof(GameObject));
             instantiatedCurrentHero = Instantiate(hero, MainHeroBS.transform.position, Quaternion.identity);
-            instantiatedCurrentHero.transform.localScale = new Vector3(150, 150, 150);
-           
+            instantiatedCurrentHero.transform.localScale = new Vector3(120, 120, 120);
+
+            AttackStat.text = instantiatedCurrentHero.GetComponent<Hero>().Damage.ToString();
+            HPStat.text = instantiatedCurrentHero.GetComponent<Hero>().MaxHP.ToString();
+            CritStat.text = instantiatedCurrentHero.GetComponent<Hero>().CritChance.ToString();
         }
 
         public void InstantiateRanger()
         {
+            ActivateStats();
             Start.SetActive(true);
             selectedHero = 2;
             hero = (GameObject)Resources.Load("Ranger", typeof(GameObject));
             instantiatedCurrentHero = Instantiate(hero, MainHeroBS.transform.position, Quaternion.identity);
-            instantiatedCurrentHero.transform.localScale = new Vector3(150, 150, 150);
+            instantiatedCurrentHero.transform.localScale = new Vector3(120, 120, 120);
+
+            AttackStat.text = instantiatedCurrentHero.GetComponent<Hero>().Damage.ToString();
+            HPStat.text = instantiatedCurrentHero.GetComponent<Hero>().MaxHP.ToString();
+            CritStat.text = instantiatedCurrentHero.GetComponent<Hero>().CritChance.ToString();
 
         }
 
         public void InstantiateSpellcaster()
         {
+            ActivateStats();
             Start.SetActive(true);
             selectedHero = 3;
             hero = (GameObject)Resources.Load("Wizard", typeof(GameObject));
             instantiatedCurrentHero = Instantiate(hero, MainHeroBS.transform.position, Quaternion.identity);
-            instantiatedCurrentHero.transform.localScale = new Vector3(150, 150, 150);
+            instantiatedCurrentHero.transform.localScale = new Vector3(120, 120, 120);
+
+            AttackStat.text = instantiatedCurrentHero.GetComponent<Hero>().Damage.ToString();
+            HPStat.text = instantiatedCurrentHero.GetComponent<Hero>().MaxHP.ToString();
+            CritStat.text = instantiatedCurrentHero.GetComponent<Hero>().CritChance.ToString();
         }
 
         public void InstantiateSpearman()
         {
+            ActivateStats();
             Start.SetActive(true);
             selectedHero = 4;
             hero = (GameObject)Resources.Load("Spearman", typeof(GameObject));
             instantiatedCurrentHero = Instantiate(hero, MainHeroBS.transform.position, Quaternion.identity);
-            instantiatedCurrentHero.transform.localScale = new Vector3(150, 150, 150);
+            instantiatedCurrentHero.transform.localScale = new Vector3(120, 120, 120);
+
+            AttackStat.text = instantiatedCurrentHero.GetComponent<Hero>().Damage.ToString();
+            HPStat.text = instantiatedCurrentHero.GetComponent<Hero>().MaxHP.ToString();
+            CritStat.text = instantiatedCurrentHero.GetComponent<Hero>().CritChance.ToString();
         }
 
         public void DestroyHero() {
@@ -145,5 +182,18 @@ namespace Sands
             HeroPartyDB.SaveParty();
             Debug.Log("Added Spearman");
         }
+
+        private void ActivateStats() {
+
+            foreach (var image in StatImage)
+            {
+                image.SetActive(true);
+            }
+
+            AttackStat.gameObject.SetActive(true);
+            HPStat.gameObject.SetActive(true);
+            CritStat.gameObject.SetActive(true);
+        }
+    
     }
 }

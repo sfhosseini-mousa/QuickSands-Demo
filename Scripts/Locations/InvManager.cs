@@ -27,9 +27,7 @@ namespace Sands
         [SerializeField] private GameObject fireButton;                                            //
         [SerializeField] private GameObject firePopUp;                                             //
         [SerializeField] private Text vehicleName;                                                 //
-        [SerializeField] private Text heroLevel;                                                   //
-        [SerializeField] private Text partyHealth;                                                 //
-        [SerializeField] private Text partyDamage;///////////////////////////////////////////////////
+        [SerializeField] private Text heroLevel;/////////////////////////////////////////////////////
 
         private int selectedIndex;           //index of the selected hero
         private int pHealth = 0;             //sum of party's health
@@ -37,9 +35,10 @@ namespace Sands
         int health = 0;                      //health of individual heroes
         int damage = 0;                      //damage of individual heroes
 
+        int heroCount = 0;
 
         //Inventory
-        
+
         [SerializeField] Text fullGaugeText;
         [SerializeField] Text emptyGaugeText;
 
@@ -48,6 +47,8 @@ namespace Sands
 
         void Start()
         {
+            CountHeroes();
+
             //necessary text control on start of scene
             fullGaugeText.gameObject.SetActive(false);
             emptyGaugeText.gameObject.SetActive(false);
@@ -146,7 +147,7 @@ namespace Sands
                 }
 
                 //if there is more than one hero make fire button interactable
-                if (HeroPartyDB.getHeroList().Count == 1)
+                if (heroCount == 1)
                     fireButton.GetComponent<Selectable>().interactable = false;
 
                 InstantiateHeroes();
@@ -198,7 +199,7 @@ namespace Sands
         //instantiates all the heroes and sets their skin
         public void InstantiateHeroes()
         {
-            if (HeroPartyDB.getHeroList().Count == 1)
+            if (heroCount == 1)
                 fireButton.GetComponent<Selectable>().interactable = false;
             try
             {
@@ -228,7 +229,7 @@ namespace Sands
         public void ReInstantiateHeroes()
         {
 
-            if (HeroPartyDB.getHeroList().Count == 1)
+            if (heroCount == 1)
                 fireButton.GetComponent<Selectable>().interactable = false;
 
             //if player has a vehicle
@@ -357,10 +358,34 @@ namespace Sands
 
             InstantiateCurrentHero(selectedIndex);
             SetCurrentHeroStats(selectedIndex);
+
+            if (HeroPartyDB.getHero(selectedIndex).IsQuestHero == true)
+            {
+                fireButton.GetComponent<Selectable>().interactable = false;
+            }
+            else {
+                fireButton.GetComponent<Selectable>().interactable = true;
+            }
+          
+            if (heroCount == 1) {
+                fireButton.GetComponent<Selectable>().interactable = false;
+            }
         }
 
-        //sets the sum of stats of the hero in the scene
-        public void SetCurrentHeroStats(int index)
+
+        public void CountHeroes() {
+            heroCount = 0;
+            for (int i = 0; i < HeroPartyDB.getHeroList().Count; i++)
+            {
+                if (HeroPartyDB.getHero(i).IsQuestHero == false)
+                {
+                    heroCount++;
+                }
+            }
+        }
+
+//sets the sum of stats of the hero in the scene
+public void SetCurrentHeroStats(int index)
         {
             health = 0;
             damage = 0;
@@ -502,10 +527,6 @@ namespace Sands
             }
             if (Player.HasVehicle) 
             pHealth += Player.CurrentVehicle.VehicleHP;
-
-
-            partyDamage.text = pDamage.ToString();
-            partyHealth.text = pHealth.ToString();
         }
 
         public void FireOnClick() {
@@ -518,7 +539,7 @@ namespace Sands
 
             HeroPartyDB.getHeroList().RemoveAt(selectedIndex);
             HeroPartyDB.SaveParty();
-
+            CountHeroes();
             heroButtons[selectedIndex].SetActive(false);
 
             ReInstantiateHeroes();

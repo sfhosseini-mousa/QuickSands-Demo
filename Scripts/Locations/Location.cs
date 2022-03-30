@@ -13,25 +13,33 @@ namespace Sands
 
         private int id;
         private string locationName;
-        private double latitude;
-        private double longitude;
+        private int townTier;
         private int[] nearbyTowns;
         private int territory;
         private List<double> tradePrices;
+
+        List<int> itemStock;
+
+
+            
+
+
+
+
 
         //default constructor
         public Location() { }
 
         //6 argument constructor
-        public Location(int id, string locationName, double latitude, double longitude, int territory, int[] nearbyTowns)
+        public Location(int id, string locationName, int townTier, int territory, int[] nearbyTowns)
         {
             this.id = id;
             this.locationName = locationName;
-            this.latitude = latitude;
-            this.longitude = longitude;
+            this.townTier = townTier;
             this.territory = territory;
             this.nearbyTowns = nearbyTowns;
             this.tradePrices = new List<double>();
+            this.itemStock = new List<int>();
         }
 
         //memento copy constructor
@@ -39,10 +47,10 @@ namespace Sands
         {
             this.id = locationMemento.Id;
             this.locationName = locationMemento.LocationName;
-            this.latitude = locationMemento.Latitude;
-            this.longitude = locationMemento.Longitude;
-            this.nearbyTowns = locationMemento.NearbyTowns;
+            this.townTier = locationMemento.TownTier;
             this.territory = locationMemento.Territory;
+            this.nearbyTowns = locationMemento.NearbyTowns;
+            
         }
         
         public int Id
@@ -68,28 +76,15 @@ namespace Sands
                 locationName = value;
             }
         }
-
-        public double Latitude
+        public int TownTier
         {
             get
             {
-                return latitude;
+                return townTier;
             }
             set
             {
-                latitude = value;
-            }
-        }
-
-        public double Longitude
-        {
-            get
-            {
-                return longitude;
-            }
-            set
-            {
-                longitude = value;
+                townTier = value;
             }
         }
 
@@ -125,6 +120,18 @@ namespace Sands
             set
             {
                 tradePrices = value;
+            }
+        }
+
+        public List<int> ItemStock
+        {
+            get
+            {
+                return itemStock;
+            }
+            set
+            {
+                itemStock = value;
             }
         }
     }

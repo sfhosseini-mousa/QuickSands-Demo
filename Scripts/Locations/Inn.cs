@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 //COMMENTED BY FARAMARZ HOSSEINI
 
@@ -8,8 +9,6 @@ namespace Sands
 {
     public class Inn : MonoBehaviour
     {
-        [SerializeField] private Transform[] heroHS = new Transform[3];         //position of each hero
-        [SerializeField] private GameObject[] hireButtons = new GameObject[3];  //hero hire buttons
         [SerializeField] private GameObject hirePopUp;
         private GameObject[] heroPrefabs = new GameObject[3];
         private Transform[] heroTransforms = new Transform[3];
@@ -24,6 +23,11 @@ namespace Sands
         [SerializeField] private GameObject[] bannerLocations;
         private static bool[] hired = new bool[3];                              //checks if each hero is hired previously
         private static Location savedLocation;                                  //remembers the players previous location
+        [SerializeField] private AudioSource hireSound;
+        [SerializeField] private GameObject heroCardSpawn;
+        private GameObject[] heroCards = new GameObject[3];
+        private HeroStatChecker statChecker = new HeroStatChecker();
+        [SerializeField] private DanielLochner.Assets.SimpleScrollSnap.SimpleScrollSnap simpleScrollSnap;
 
         void Start()
         {
@@ -41,14 +45,10 @@ namespace Sands
 
             hirePopUp.SetActive(false);
 
-            foreach (var button in hireButtons)
-            {
-                button.SetActive(false);
-            }
 
             CheckLocation();
-
             InstatiateHeroes();
+            StartCoroutine(AnimateCards());
             InstantiateBanners();
         }
         
@@ -74,6 +74,9 @@ namespace Sands
 
         //instantiates up to 3 heroes for the Inn
         public void InstatiateHeroes(){
+
+            GameObject heroCardPrefab = (GameObject)Resources.Load("Hero Card", typeof(GameObject));
+
             for (int i = 0; i < InnHeroes.InnHeroesList.Count; i++)
             {
                 heroPrefabs[i] = (GameObject)Resources.Load(InnHeroes.InnHeroesList[i].GetType().Name, typeof(GameObject));
@@ -93,14 +96,60 @@ namespace Sands
                     default:
                     break;
                 }
-                heroTransforms[i] = Instantiate(heroPrefabs[i].transform, heroHS[i].position, Quaternion.identity);
-                hireButtons[i].SetActive(true);
+
+                heroCards[i] = Instantiate(heroCardPrefab);
+
+
+                //heroCards[i].transform.SetParent(heroCardSpawn.transform);
+                //heroCards[i].transform.localScale = Vector3.one;
+
+                HeroCard heroCard = heroCards[i].GetComponent<HeroCard>();
+
+                heroCard.heroNameAndLevel.text = InnHeroes.InnHeroesList[i].GetType().Name + " Level " + skinTire;
+                heroCard.heroHP.text = statChecker.GetHeroHealth(InnHeroes.InnHeroesList[i]).ToString();
+                heroCard.heroDamage.text = statChecker.GetHeroDamage(InnHeroes.InnHeroesList[i]).ToString();
+                heroCard.heroPrice.text = price[i] + " Coin";
+                heroTransforms[i] = Instantiate(heroPrefabs[i], heroCard.heroSpawn.transform).transform;
+                heroTransforms[i].localPosition = Vector3.zero;
+                heroTransforms[i].localScale = new Vector3(155f, 155f, 0f);
+
+                simpleScrollSnap.Add(heroCards[i], i);
+                Destroy(heroCards[i]);
+            }
+
+            for (int i = 0; i < simpleScrollSnap.Panels.Length; i++)
+            {
+                int index = i;
+                simpleScrollSnap.Panels[i].GetComponent<HeroCard>().hireBtn.onClick.AddListener(() =>
+                {
+                    HeroOnClick(index);
+                });
+
+                if (hired[i])
+                {
+                    DeactivateHeroCard(i);
+                }
             }
         }
 
+        private IEnumerator AnimateCards()
+        {
+            for (int i = 0; i < InnHeroes.InnHeroesList.Count; i++)
+            {
+                yield return new WaitForSeconds(0.4f);
+                simpleScrollSnap.GoToNextPanel();
+            }
+        }
+
+        private void DeactivateHeroCard(int i)
+        {
+            simpleScrollSnap.Panels[i].GetComponent<HeroCard>().hireBtn.GetComponent<Selectable>().interactable = false;
+            simpleScrollSnap.Panels[i].GetComponent<HeroCard>().hireBtn.GetComponentInChildren<Text>().text = "Hired";
+        }
+
         //sets the values of hirePopUp
-        public void HeroOnClick(){
-            selectedHeroIndex = System.Convert.ToInt32(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name) - 1;
+        public void HeroOnClick(int index){
+            selectedHeroIndex = index;
             if (!hired[selectedHeroIndex])
             {
                 hirePopUp.SetActive(true);
@@ -119,6 +168,7 @@ namespace Sands
             if(Player.HasVehicle && HeroPartyDB.getHeroList().Count < 5 && Player.CurrentVehicle.PartySize > HeroPartyDB.getHeroList().Count){
                 PlayerInventory.LoadPlayerInventory();
                 if(PlayerInventory.Money >= price[selectedHeroIndex]){
+                    hireSound.Play();
 
                     //deducts the money from the player
                     PlayerInventory.Money -= price[selectedHeroIndex];
@@ -155,11 +205,12 @@ namespace Sands
 
                     hired[selectedHeroIndex] = true;
 
+                    DeactivateHeroCard(selectedHeroIndex);
+
                     money.text = System.Convert.ToString(PlayerInventory.Money);
                     partySize.text = System.Convert.ToString(HeroPartyDB.getHeroList().Count);
                     
                     hirePopUp.SetActive(false);
-                    hireButtons[selectedHeroIndex].SetActive(false);
                 }
                 else{
                     errorText.text = "Not Enough Gold";

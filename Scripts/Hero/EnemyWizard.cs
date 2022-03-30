@@ -8,15 +8,16 @@ namespace Sands
 {
     public class EnemyWizard : Hero
     {
-        public EnemyWizard(int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire) : base(damage, critChance, maxHP, currentHP, capacity, skinTire) { }
+        public EnemyWizard(int id, int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire, bool isQuestHero) : base(id, damage, critChance, maxHP, currentHP, capacity, skinTire, isQuestHero) { }
         void Awake()
         {
-
+            this.Id = HeroClassDB.heroes[8].Id;
             this.Damage = HeroClassDB.heroes[8].Damage;
             this.CritChance = HeroClassDB.heroes[8].CritChance;
             this.MaxHP = HeroClassDB.heroes[8].MaxHP + 200;
             this.CurrentHP = HeroClassDB.heroes[8].CurrentHP + 200;
             this.Capacity = HeroClassDB.heroes[8].Capacity;
+            this.IsQuestHero = HeroClassDB.heroes[8].IsQuestHero;
         }
 
         public override bool TakeDamage(int dmg)

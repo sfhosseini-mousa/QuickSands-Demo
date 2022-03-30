@@ -40,4 +40,9 @@ public class ContiniousMusic : MonoBehaviour
     {
         audioSource.Pause();
     }
+
+    public void ResetMusic()
+    {
+        audioSource.time = 0.0f;
+    }
 }

@@ -21,7 +21,7 @@ namespace Sands
 
         private GameObject[] instantiatedQuestHolder = new GameObject[1];
         private bool[] completedQuests;           //a list of all the quests that are completed
-        private int selctedQuest;                 //the quest player clicks on
+        private int selectedQuest;                 //the quest player clicks on
 
         public void QuestsOnClick()
         {
@@ -129,7 +129,7 @@ namespace Sands
         //fills all the variables in a quest pop up
         private void FillInQuest(int index)
         {
-            selctedQuest = index;
+            selectedQuest = index;
             questPopUp.SetActive(true);
 
             //activates the complete button if the quest is completed
@@ -179,18 +179,18 @@ namespace Sands
             //tries to cast the quest to a deliveryQuest and remove the items from inventory
             try
             {
-                PlayerInventory.RemoveFromInventory(((DeliveryQuest)Player.AcceptedQuests[selctedQuest]).ChosenTradeable.Id, ((DeliveryQuest)Player.AcceptedQuests[selctedQuest]).ChosenAmount);
-                PlayerInventory.Money += Player.AcceptedQuests[selctedQuest].QuestReward;
+                PlayerInventory.RemoveFromInventory(((DeliveryQuest)Player.AcceptedQuests[selectedQuest]).ChosenTradeable.Id, ((DeliveryQuest)Player.AcceptedQuests[selectedQuest]).ChosenAmount);
+                PlayerInventory.Money += Player.AcceptedQuests[selectedQuest].QuestReward;
             }
             catch (System.Exception)
             {
-                PlayerInventory.Money += Player.AcceptedQuests[selctedQuest].QuestReward;
+                PlayerInventory.Money += Player.AcceptedQuests[selectedQuest].QuestReward;
             }
 
             PlayerInventory.SavePlayerInventory();
 
             //removes the quest
-            Player.AcceptedQuests.RemoveAt(selctedQuest);
+            Player.AcceptedQuests.RemoveAt(selectedQuest);
             Player.SavePlayer();
             QuestsOnClick();
 
@@ -204,7 +204,12 @@ namespace Sands
         //removes a quest that player wants to abandon
         public void AbandonQuestOnClick()
         {
-            Player.AcceptedQuests.RemoveAt(selctedQuest);
+            if (Player.AcceptedQuests[selectedQuest].QuestName == "Transport")
+            {
+                ((TransportQuest)Player.AcceptedQuests[selectedQuest]).RemoveQuestHero();
+             }
+
+            Player.AcceptedQuests.RemoveAt(selectedQuest);
             Player.SavePlayer();
             QuestsOnClick();
             completeButton.SetActive(false);
@@ -212,6 +217,8 @@ namespace Sands
 
             if (Player.AcceptedQuests.Count == 0)
                 questHolder.SetActive(false);
+
+           
         }
 
         //checks if there are no quests activates the empty text

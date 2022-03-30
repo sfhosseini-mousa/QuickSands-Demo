@@ -32,17 +32,17 @@ namespace Sands
             KaiserRepGauge.GetComponent<Slider>().value = repData[2];
 
             //Update Veden Status Text
-            if (repData[0] >= 0 && repData[0] <= 149)
+            if (repData[0] >= 0 && repData[0] <= 199)
             {
                 VedenStatusText.text = "Hostile";
                 VedenStatusText.color = Color.red;
             }
-            else if (repData[0] >= 150 && repData[0] <= 299)
+            else if (repData[0] >= 200 && repData[0] <= 399)
             {
                 VedenStatusText.text = "Neutral";
                 VedenStatusText.color = Color.white;
             }
-            else if (repData[0] >= 300 && repData[0] <= 400)
+            else if (repData[0] == 400)
             {
                 VedenStatusText.text = "Ally";
                 VedenStatusText.color = Color.cyan;
@@ -50,34 +50,34 @@ namespace Sands
 
 
             //Update Fara Status Text
-            if (repData[1] >= 0 && repData[1] <= 149)
+            if (repData[1] >= 0 && repData[1] <= 199)
             {
                 FaraStatusText.text = "Hostile";
                 FaraStatusText.color = Color.red;
             }
-            else if (repData[1] >= 150 && repData[1] <= 299)
+            else if (repData[1] >= 200 && repData[1] <= 399)
             {
                 FaraStatusText.text = "Neutral";
                 FaraStatusText.color = Color.white;
             }
-            else if (repData[1] >= 250 && repData[1] <= 400)
+            else if (repData[1] == 400)
             {
                 FaraStatusText.text = "Ally";
                 FaraStatusText.color = Color.cyan;
             }
 
             //Update Kaiser Status Text
-            if (repData[2] >= 0 && repData[2] <= 149)
+            if (repData[2] >= 0 && repData[2] <= 199)
             {
                 KaiserStatusText.text = "Hostile";
                 KaiserStatusText.color = Color.red;
             }
-            else if (repData[2] >= 150 && repData[2] <= 299)
+            else if (repData[2] >= 200 && repData[2] <= 399)
             {
                 KaiserStatusText.text = "Neutral";
                 KaiserStatusText.color = Color.white;
             }
-            else if (repData[2] >= 300 && repData[2] <= 400)
+            else if (repData[2] == 400)
             {
                 KaiserStatusText.text = "Ally";
                 KaiserStatusText.color = Color.cyan;

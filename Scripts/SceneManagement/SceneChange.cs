@@ -16,15 +16,23 @@ public class SceneChange : MonoBehaviour
         File.Delete(Application.persistentDataPath + "/player.savefile");
         Sands.SaveSystem.Pdata = new Sands.PlayerData();
         Sands.SaveSystem.LoadAll();
+        SetSavedVolumes();
         Sands.SaveSystem.SaveAll();
-        StartCoroutine(LoadLevel("CharSelect"));
+        StartCoroutine(LoadLevel("BattleTutorial"));
+    }
+
+    void SetSavedVolumes()
+    {
+        Sands.Player.AudioVolume = SettingsMenu.SavedVolume;
+        Sands.Player.SfxVolume = SettingsMenu.SavedSfxVolume;
+        Sands.Player.MusicVolume = SettingsMenu.SavedMusicVolume;
     }
 
     //called with new game but if there is a save file doesn't do anything
     public void NewGame2()
     {
       if(!File.Exists(Application.persistentDataPath + "/player.savefile"))
-            StartCoroutine(LoadLevel("CharSelect"));
+            StartCoroutine(LoadLevel("BattleTutorial"));
     }
 
   public void warning()

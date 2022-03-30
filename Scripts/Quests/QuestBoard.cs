@@ -64,8 +64,34 @@ namespace Sands
             //generate 4 delivery quests
             for (int i = 0; i < 5; i++)
             {
-                DeliveryQuest deliveryQuest = new DeliveryQuest(1);
-                quests.Add(deliveryQuest);
+                if(i == 0 && TutorialManager.FourthTimeEnteringFromQuestBoard)
+                {
+                    TransportQuest transportQuest = new TransportQuest(1);
+                    quests.Add(transportQuest);
+                }
+                else
+                {
+                    switch (Random.Range(0, 2))
+                    {
+                        case 0:
+                            DeliveryQuest deliveryQuest = new DeliveryQuest(1);
+                            quests.Add(deliveryQuest);
+                            break;
+
+                        case 1:
+                            TransportQuest transportQuest = new TransportQuest(1);
+                            quests.Add(transportQuest);
+                            break;
+
+                        case 2:
+                            FactionQuest factionQuest = new FactionQuest(1);
+                            quests.Add(factionQuest);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
             }
 
 
@@ -108,6 +134,9 @@ namespace Sands
                 instantiatedQuestHolder[i].transform.localScale = new Vector3(0.013f, 0.013f, 0.013f);
                 instantiatedQuestHolder[i].transform.SetParent(content.transform);
 
+                if(i == 0)
+                    instantiatedQuestHolder[i].name = "QuestHolder";
+
                 //fills in the variables in QuestHolder
                 instantiatedQuestHolder[i].GetComponent<QuestHolder>().questNameText.text = quests[i].QuestName;
                 switch (quests[i].QuestLocation.Territory)
@@ -121,7 +150,7 @@ namespace Sands
                         instantiatedQuestHolder[i].GetComponent<QuestHolder>().factionText.color = Color.green;
                         break;
                     case 3:
-                        instantiatedQuestHolder[i].GetComponent<QuestHolder>().factionText.text = "The Kaiserreich";
+                        instantiatedQuestHolder[i].GetComponent<QuestHolder>().factionText.text = "Kaiserreich";
                         instantiatedQuestHolder[i].GetComponent<QuestHolder>().factionText.color = Color.red;
                         break;
                     default:
@@ -179,11 +208,48 @@ namespace Sands
         {
             if (Player.AcceptedQuests.Count < 9)
             {
-                questPopUp.SetActive(false);
-                Player.AcceptedQuests.Add(quests[selectedQuest]);
-                Player.SavePlayer();
-                acceptedQuests[selectedQuest] = true;
-                instantiatedQuestHolder[selectedQuest].GetComponent<Selectable>().interactable = false;
+                
+
+
+                if (quests[selectedQuest].QuestName == "Transport")
+                {
+                    //check if has vehicle
+                    if (Player.HasVehicle == true)
+                    {
+                        //if vehicle has space
+                        if (HeroPartyDB.getHeroList().Count < Player.CurrentVehicle.PartySize)
+                        {
+
+                            //accept quest
+                            Player.AcceptedQuests.Add(quests[selectedQuest]);
+                            Player.SavePlayer();
+                            acceptedQuests[selectedQuest] = true;
+                            instantiatedQuestHolder[selectedQuest].GetComponent<Selectable>().interactable = false;
+
+                            //add hero
+                            ((TransportQuest)quests[selectedQuest]).AddQuestHero();
+
+                            questPopUp.SetActive(false);
+                        }
+                        else {
+                            questError.text = "Max Hero Capacity";
+                        }
+                    }
+                    else {
+                        questError.text = "Max Hero Capacity";
+                    }
+                }
+                else
+                {
+                    Player.AcceptedQuests.Add(quests[selectedQuest]);
+                    Player.SavePlayer();
+                    acceptedQuests[selectedQuest] = true;
+                    instantiatedQuestHolder[selectedQuest].GetComponent<Selectable>().interactable = false;
+                    questPopUp.SetActive(false);
+
+                }
+
+
             }
             else
             {

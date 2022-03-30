@@ -21,6 +21,7 @@ namespace Sands
         [SerializeField] private AudioSource travelMusic;       //default audio track
         [SerializeField] private AudioSource battleMusic;       //battle audio track
         [SerializeField] private AudioSource defeatMusic;       //defeat audio track
+        [SerializeField] private AudioSource victoryMusic;      //victory audio track
 
         //Scripts
         [SerializeField] private GameObject encounterSystem;    //Encounter System reference
@@ -40,7 +41,7 @@ namespace Sands
         [SerializeField] private GameObject blockButton;            //Warrior
         [SerializeField] private GameObject spearmanAbilityButton;     //Spearman
         [SerializeField] private GameObject wizardAbilityButton;        //Spellcaster
-        [SerializeField] private GameObject[] battleElements = new GameObject[3];      //Active Action Buttons
+        [SerializeField] private GameObject[] battleElements = new GameObject[2];      //Active Action Buttons
         [SerializeField] private GameObject[] tutorials = new GameObject[5];
         private bool shouldHeal = false;
         private bool shouldDefend = false;
@@ -100,14 +101,10 @@ namespace Sands
         [SerializeField] private Text factionName;
         private int factionIntAmount = 0;
 
-        //Retreat Nitro
-        [SerializeField] private GameObject nitroGauge;
-        //[SerializeField] private GameObject fillCargo;
-        [SerializeField] private GameObject FuelBarBs;
-        [SerializeField] private GameObject FuelAmountBs;
-        [SerializeField] private GameObject FuelTextBs;
-        [SerializeField] private GameObject FuelBackBs;
-        private double nitroHalfCheck = 0;
+        public static bool hasHadABandit = false;
+
+      
+       
 
         private bool isPlayersTurn = false;
 
@@ -155,13 +152,7 @@ namespace Sands
             //Starts battle in Travel Scene
             StartCoroutine(SetupBattle());
 
-            //Vehicle Retreat Nitro Check and Update
-            if (EncounterSystem.fuelCurrentAmount == 2 || EncounterSystem.fuelMaxAmount == 1)
-                nitroGauge.GetComponent<Image>().fillAmount = EncounterSystem.fuelCurrentAmount * 1;
-            else if (nitroHalfCheck == 0.5)
-                nitroGauge.GetComponent<Image>().fillAmount = (float)(EncounterSystem.fuelCurrentAmount * 0.5);
-            else
-                nitroGauge.GetComponent<Image>().fillAmount = EncounterSystem.fuelCurrentAmount * 0;
+            
         }
 
         //Load Player Data
@@ -194,14 +185,7 @@ namespace Sands
                 item.SetActive(true);
             }
 
-            //Display Retreat Nitro
-            if (Player.HasVehicle)
-            {
-                FuelBarBs.SetActive(true);
-                FuelBackBs.SetActive(true);
-                FuelTextBs.SetActive(true);
-                FuelAmountBs.SetActive(true);
-            }
+           
 
             //Hero/Enemy Movement Animation
                    //Stop background Parallex effect
@@ -293,6 +277,12 @@ namespace Sands
             }
             //the money faction requests
             factionRequestAmount.text = factionIntAmount + " G";
+
+            if (HeroPartyDB.getHeroList().Count == 1)
+            {
+                factionIntAmount = 0;
+                factionRequestAmount.text = "Free for one hero";
+            }
         }
 
         //Ends the Faction Encounter
@@ -361,7 +351,13 @@ namespace Sands
             }
             else
             {
-                switch (UnityEngine.Random.Range(0, 3))
+                int randomFaction;
+                if(HeroPartyDB.getHeroList().Count == 1 || (hasHadABandit && HeroPartyDB.getHeroList().Count < 3))
+                   randomFaction = UnityEngine.Random.Range(0, 2);
+                else
+                    randomFaction = UnityEngine.Random.Range(0, 3);
+
+                switch (randomFaction)
                 {
                     case 0:
                         enemyFaction = Player.LocationToTravelTo.Territory;         //Destination Town Faction
@@ -372,6 +368,7 @@ namespace Sands
                         break;
                     case 2:
                         enemyFaction = 4;       //Bandits
+                        hasHadABandit = true;
                         break;
 
                 }
@@ -524,7 +521,7 @@ namespace Sands
                 switch (partySize)
                 {
                     case 1:
-                        enemyVehicleIndex = UnityEngine.Random.Range(0, 1);
+                        enemyVehicleIndex = 0;
                         break;
                     case 2:
                         enemyVehicleIndex = UnityEngine.Random.Range(0, 2);
@@ -1482,75 +1479,6 @@ namespace Sands
             }
         }
 
-        //Retreat Logic
-        //Uses Vehicle Speed and Fuel to Decide on Successful Retreat
-        public void runAway()
-        {
-            if (EncounterSystem.fuelCurrentAmount > 0)
-            {
-                if (battleState != BattleState2.PLAYERTURN)
-                    return;
-                else
-                {
-                    int chance = EncounterSystem.PlayerVehicle.Speed / 2;
-                    int random = UnityEngine.Random.Range(1, 100);
-                    if (random <= chance)
-                    {
-                        TravelMusic();
-;
-                        dialogueText.text = "You got away safely";
-                        battleState = BattleState2.ENEMYTURN;
-                        Debug.Log("Success");
-
-                        EncounterSystem.fuelCurrentAmount -= 1;
-
-                        if (EncounterSystem.fuelMaxAmount == 2)
-                        {
-                            nitroGauge.GetComponent<Image>().fillAmount = (float)(EncounterSystem.fuelCurrentAmount * 0.5);
-                            nitroHalfCheck = 0.5;
-                        }
-                        else if (EncounterSystem.fuelMaxAmount == 1)
-                            nitroGauge.GetComponent<Image>().fillAmount = EncounterSystem.fuelCurrentAmount * 1;
-
-                        for (int i = 0; i < enemyBattleCheckers.Length; i++)
-                        {
-                            heroButtons[i].SetActive(false);
-                            enemyButtons[i].SetActive(false);
-                            enemyButtons[i].transform.position = enemyBSList[i].transform.position + new Vector3(0, 0.6f, 0);
-                            heroButtons[i].transform.position = heroBSList[i].transform.position + new Vector3(0, 0.6f, 0);
-                        }
-
-                        MoveEnemyVehicleOutC = StartCoroutine(MoveEnemyVehicleOut());
-                        MoveHeroAnimation();
-
-                        Parallex.ShouldMove = true;
-
-                        DestroyHeroIndicator();
-                        DestroyEnemyIndicator();
-
-                        DestroyAllHealthBars();
-                        HideBattleUI();
-
-                        clickNextBattle();
-
-                    }
-                    else   //Fail Retreating
-                    {
-                        battleState = BattleState2.ENEMYTURN;
-                        Debug.Log("Fail");
-                        StartCoroutine(EnemyTurn());
-                        dialogueText.text = "There is no escape!";
-                    }
-                }
-            }
-            else
-            {
-                dialogueText.text = "Not enough Nitro to escape!";
-                return;
-            }
-
-        }
-
 
         /// /// /// /// /// /// /// END /// /// /// /// /// /// /// ///
         //Battle WON or LOST Logic
@@ -1563,6 +1491,7 @@ namespace Sands
 
             if (battleState == BattleState2.WON)
             {
+                victoryMusic.Play();
                 victoryPopUp.SetActive(true);
                 dialogueText.text = "You won the battle!";
 
@@ -1582,13 +1511,7 @@ namespace Sands
             {
                 item.SetActive(false);
             }
-            if (Player.HasVehicle)
-            {
-                FuelBarBs.SetActive(false);
-                FuelBackBs.SetActive(false);
-                FuelTextBs.SetActive(false);
-                FuelAmountBs.SetActive(false);
-            }
+           
             twoForOneButton.SetActive(false);
             blockButton.SetActive(false);
             healButton.SetActive(false);
@@ -1619,6 +1542,13 @@ namespace Sands
             enemyBSList[4].transform.SetParent(null);
             yield return new WaitForSeconds(5f);
             Destroy(instantiatedEnemyVehicle.gameObject);
+
+            foreach (Quest quest in Player.AcceptedQuests)
+            {
+                if (quest.QuestName == "Faction")
+                    ((FactionQuest)quest).IncreaseCounter(enemyFaction);
+            }
+
             EncounterSystem.ContinueFunction = true;
         }
 
@@ -1714,6 +1644,7 @@ namespace Sands
 
             PlayerInventory.SavePlayerInventory();
 
+            EncounterSystem.WasInABattle = false;
             BattleSaver.IsInABattle = false;
             BattleSaver.IsInTravel = false;
             BattleSaver.SaveBattle();

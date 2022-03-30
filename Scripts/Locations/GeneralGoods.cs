@@ -30,7 +30,9 @@ namespace Sands
         [SerializeField] GameObject emptyText;                                                      //
         [SerializeField] GameObject sellAllButton;                                                  //
         [SerializeField] Text sellAllEarningText;/////////////////////////////////////////////////////
-                                                                
+
+
+
         private Location playerLocation;                //Player's current location
         private float capacity = 0;                     //player's party capacity
         private float carrying = 0;                     //player's carrying amount
@@ -45,8 +47,11 @@ namespace Sands
 
         private bool isBuy = true;                      //if true player is in the shop if false they are in inventory
 
-        public void Start(){
-            //set the fisrt item to cloth
+        [SerializeField] private AudioSource buySound;
+
+        public void Start()
+        {
+            //set the first item to cloth
             selectedItem = "Cloth";
             Player.LoadPlayer();
             money.text = System.Convert.ToString(PlayerInventory.Money);
@@ -54,7 +59,8 @@ namespace Sands
             //get player's location from the database
             foreach (var item in LocationDB.getLocationList())
             {
-                if(item.LocationName == Player.CurrentLocation.LocationName){
+                if (item.LocationName == Player.CurrentLocation.LocationName)
+                {
                     playerLocation = item;
                 }
             }
@@ -71,7 +77,7 @@ namespace Sands
                 capacity += hero.Capacity;
             }
 
-            if(Player.HasVehicle)
+            if (Player.HasVehicle)
                 capacity += Player.CurrentVehicle.Capacity;
 
             calculateCarrying();
@@ -87,7 +93,8 @@ namespace Sands
         }
 
         //clicking on an item activates the proper pop up and fills it in
-        public void ItemOnClick(int index){
+        public void ItemOnClick(int index)
+        {
 
             selectedItemIndex = index;
             selectedItem = TradeableDatabase.getTradeable(selectedItemIndex).ItemName;
@@ -102,12 +109,16 @@ namespace Sands
 
             if (isBuy)
             {
-                buyPopUp.SetActive(true);
-                goodNameBuy.text = selectedItem;
-                goodCountBuy.text = "0";
-                goodPriceBuy.text = "0";
-                goodImageBuy.sprite = Resources.Load<Sprite>(selectedItem);
-                setCountSlider();
+                if (LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[myTradeable.Id - 1] > 0)
+                {
+                    buyPopUp.SetActive(true);
+                    goodNameBuy.text = selectedItem;
+                    goodCountBuy.text = "0";
+                    goodPriceBuy.text = "0";
+                    goodImageBuy.sprite = Resources.Load<Sprite>(selectedItem);
+                    setCountSlider();
+                }
+
             }
             else
             {
@@ -123,32 +134,44 @@ namespace Sands
         }
 
         //sets up the count slider of the buy pop up to never exceed the available capacity
-        public void setCountSlider(){
+        public void setCountSlider()
+        {
+
+            //if weight < available max = weight
+            //if can carry a lot more in weight then the item limit is available
             int maxValue = ((int)capacity - (int)carrying) / myTradeable.Weight;
+            int maxStock = LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[myTradeable.Id - 1];
+            if (maxValue > maxStock)
+            {
+                maxValue = maxStock;
+            }
+
             countSlider.GetComponent<Slider>().maxValue = maxValue;
             countSlider.GetComponent<Slider>().value = 0;
         }
 
         //sets up the count slider of the sell pop up to be the number of items player has
-        public void setSellCountSlider(){
+        public void setSellCountSlider()
+        {
             sellCountSlider.GetComponent<Slider>().maxValue = PlayerInventory.TradeableInventory[myTradeable.Id - 1].Count;
             sellCountSlider.GetComponent<Slider>().value = 0;
 
-            if(PlayerInventory.TradeableInventory[myTradeable.Id - 1].Count == 0)
+            if (PlayerInventory.TradeableInventory[myTradeable.Id - 1].Count == 0)
                 errorTextSell.text = "No Loot";
             else
                 errorTextSell.text = "";
         }
 
         //calculates how much the player is carrying
-        public void calculateCarrying(){
+        public void calculateCarrying()
+        {
             carrying = 0;
             foreach (var inventoryTradeable in PlayerInventory.TradeableInventory)
             {
                 carrying += inventoryTradeable.OwnedTradeable.Weight * inventoryTradeable.Count;
             }
         }
-        
+
         //brings up the shop items
         public void ShopOnClick()
         {
@@ -189,11 +212,15 @@ namespace Sands
             goodPriceSell.text = System.Convert.ToString((int)(playerLocation.TradePrices[myTradeable.Id - 1] - playerLocation.TradePrices[myTradeable.Id - 1] * 15 / 100) * (int)sellCountSlider.GetComponent<Slider>().value);
         }
 
-        public void confirmSellOnClick(){
+        public void confirmSellOnClick()
+        {
             sellPopUp.SetActive(false);
 
             //checks if the value of the slider is 0 or not
-            if((int)sellCountSlider.GetComponent<Slider>().value != 0){
+            if ((int)sellCountSlider.GetComponent<Slider>().value != 0)
+            {
+                buySound.Play();
+
                 //removes the tradeable from player's inventory
                 PlayerInventory.RemoveFromInventory(myTradeable.Id, (int)(sellCountSlider.GetComponent<Slider>().value));
 
@@ -207,8 +234,10 @@ namespace Sands
                 //sets the count of the item holder
                 instantiatedItemHolder[myTradeable.Id - 1].GetComponent<ItemHolder>().countText.text = ((int)(PlayerInventory.TradeableInventory[myTradeable.Id - 1].Count)).ToString();
 
+                LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[myTradeable.Id - 1] += (int)(sellCountSlider.GetComponent<Slider>().value);
+
                 calculateCarrying();
-                
+
                 setSellCountSlider();
                 money.text = System.Convert.ToString(PlayerInventory.Money);
                 Gauge.GetComponent<Image>().fillAmount = carrying / capacity;
@@ -219,12 +248,17 @@ namespace Sands
             }
         }
 
-        public void confirmBuyOnClick(){
+        public void confirmBuyOnClick()
+        {
 
             //checks if the value of the slider is 0 or not
-            if ((int)countSlider.GetComponent<Slider>().value != 0){
+            if ((int)countSlider.GetComponent<Slider>().value != 0)
+            {
                 //checks if the player has enough money
-                if(PlayerInventory.Money >= playerLocation.TradePrices[myTradeable.Id - 1] * (int)countSlider.GetComponent<Slider>().value){
+                if (PlayerInventory.Money >= playerLocation.TradePrices[myTradeable.Id - 1] * (int)countSlider.GetComponent<Slider>().value)
+                {
+                    buySound.Play();
+
                     buyPopUp.SetActive(false);
 
                     //adds the items to inventory and deducts the money
@@ -235,17 +269,25 @@ namespace Sands
                     goodCountBuy.text = "0";
                     goodPriceBuy.text = "0";
 
+
+                    LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[myTradeable.Id - 1] -= (int)(countSlider.GetComponent<Slider>().value);
+
+
                     //sets the count of the item holder
-                    instantiatedItemHolder[myTradeable.Id - 1].GetComponent<ItemHolder>().countText.text = ((int)(PlayerInventory.TradeableInventory[myTradeable.Id - 1].Count)).ToString();
+                    instantiatedItemHolder[myTradeable.Id - 1].GetComponent<ItemHolder>().countText.text = LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[myTradeable.Id - 1].ToString();
 
                     calculateCarrying();
-                    
+
                     setCountSlider();
                     money.text = System.Convert.ToString(PlayerInventory.Money);
                     Gauge.GetComponent<Image>().fillAmount = carrying / capacity;
+
+
+                    Destroy(instantiatedItemHolder[myTradeable.Id - 1]);
                 }
-                else{
-                    errorTextBuy.text = "No Coin";
+                else
+                {
+                    errorTextBuy.text = "No Money";
                 }
             }
         }
@@ -268,12 +310,15 @@ namespace Sands
         //sells all the items in the inventory
         public void SellAllYesOnClick()
         {
+            buySound.Play();
+
             int coin = 0;
             foreach (var tradeable in PlayerInventory.TradeableInventory)
             {
-                if(tradeable.Count > 0)
+                if (tradeable.Count > 0)
                 {
                     coin += (int)(playerLocation.TradePrices[tradeable.OwnedTradeable.Id - 1] - playerLocation.TradePrices[myTradeable.Id - 1] * 15 / 100) * tradeable.Count;
+                    LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[tradeable.OwnedTradeable.Id - 1] += tradeable.Count;
                 }
 
                 tradeable.Count = 0;
@@ -298,20 +343,29 @@ namespace Sands
             instantiatedItemHolder = new GameObject[TradeableDatabase.getTradeableList().Count];
             for (int i = 0; i < TradeableDatabase.getTradeableList().Count; i++)
             {
-                instantiatedItemHolder[i] = Instantiate(itemHolderPrefab, content.transform);
-
-                //ItemHolder prefab has a component named ItemHolder which sets its properties
-                instantiatedItemHolder[i].GetComponent<ItemHolder>().itemNameText.text = TradeableDatabase.getTradeable(i).ItemName;
-                instantiatedItemHolder[i].GetComponent<ItemHolder>().priceText.text = playerLocation.TradePrices[i] + " Coin";
-                instantiatedItemHolder[i].GetComponent<ItemHolder>().countText.text = "";
-                instantiatedItemHolder[i].GetComponent<ItemHolder>().iconImage.sprite = Resources.Load<Sprite>(TradeableDatabase.getTradeable(i).ItemName);
-
-                //adding ItemOnClick to the ItemHolder
-                int index = i;
-                instantiatedItemHolder[i].GetComponent<Button>().onClick.AddListener(() =>
+                if (LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[i] > 0)
                 {
-                    ItemOnClick(index);
-                });
+
+                    instantiatedItemHolder[i] = Instantiate(itemHolderPrefab, content.transform);
+
+                    if(i == 0)
+                        instantiatedItemHolder[i].name = "ItemHolder";
+
+                    //ItemHolder prefab has a component named ItemHolder which sets its properties
+                    instantiatedItemHolder[i].GetComponent<ItemHolder>().itemNameText.text = TradeableDatabase.getTradeable(i).ItemName;
+                    instantiatedItemHolder[i].GetComponent<ItemHolder>().priceText.text = playerLocation.TradePrices[i] + " Coin";
+                    instantiatedItemHolder[i].GetComponent<ItemHolder>().countText.text = LocationDB.getLocation(Player.CurrentLocation.Id - 1).ItemStock[i].ToString();
+                    instantiatedItemHolder[i].GetComponent<ItemHolder>().iconImage.sprite = Resources.Load<Sprite>(TradeableDatabase.getTradeable(i).ItemName);
+
+                    //adding ItemOnClick to the ItemHolder
+                    int index = i;
+                    instantiatedItemHolder[i].GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        ItemOnClick(index);
+                    });
+
+                }
+
             }
 
             emptyText.SetActive(false);
@@ -331,7 +385,7 @@ namespace Sands
 
                     //ItemHolder prefab has a component named ItemHolder which sets its properties
                     instantiatedItemHolder[i].GetComponent<ItemHolder>().itemNameText.text = PlayerInventory.TradeableInventory[i].OwnedTradeable.ItemName;
-                    instantiatedItemHolder[i].GetComponent<ItemHolder>().priceText.text = (int)(playerLocation.TradePrices[i] - playerLocation.TradePrices[i] * 15/100) + " Coin";
+                    instantiatedItemHolder[i].GetComponent<ItemHolder>().priceText.text = (int)(playerLocation.TradePrices[i] - playerLocation.TradePrices[i] * 15 / 100) + " Coin";
                     instantiatedItemHolder[i].GetComponent<ItemHolder>().countText.text = PlayerInventory.TradeableInventory[i].Count.ToString();
                     instantiatedItemHolder[i].GetComponent<ItemHolder>().iconImage.sprite = Resources.Load<Sprite>(TradeableDatabase.getTradeable(i).ItemName);
 

@@ -25,10 +25,10 @@ namespace Sands
                 new Tradeable(3, "Leather", 1, 50.0),
                 new Tradeable(4, "Spice", 2, 60.0),
 
-                //100 - 250
+                //100 - 150
                 new Tradeable(5, "Coal", 5, 100.0),
-                new Tradeable(6, "Steel", 7, 150.0),
-                new Tradeable(7, "Tools", 5, 250.0),
+                new Tradeable(6, "Steel", 7, 120.0),
+                new Tradeable(7, "Tools", 5, 150.0),
 
                 //400-1500
                 new Tradeable(8, "Silver", 6, 400.0),

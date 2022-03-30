@@ -13,6 +13,7 @@ namespace Sands
         //persons
         private Transform instantiatedPerson;
         [SerializeField] private Transform personStation;
+
         //popups
         [SerializeField] private GameObject WarriorPopUp;
         [SerializeField] private GameObject PersonEncounterFin;
@@ -22,21 +23,15 @@ namespace Sands
         //warrior descriptions
         [SerializeField] private GameObject warriorEncounterText;
         [SerializeField] private GameObject WarriorResolutionAidText;
-        [SerializeField] private GameObject WarriorResolutionLeaveText;
 
         //mage descriptions
         [SerializeField] private GameObject mageEncounterText;
         [SerializeField] private GameObject mageResolutionAidText;
-        [SerializeField] private GameObject mageResolutionLeaveText;
         //ranger descriptions
         [SerializeField] private GameObject rangerEncounterText;
         [SerializeField] private GameObject rangerResolutionBuyText;
-        [SerializeField] private GameObject rangerResolutionLeaveText;
 
-        //other
-        [SerializeField] private GameObject wizardEncounterText;
-        [SerializeField] private GameObject spearmanEncounterText;
-        //buttons
+          //buttons
         [SerializeField] private GameObject warriorRobButt;
         [SerializeField] private GameObject warriorAidButt;
         [SerializeField] private GameObject warriorIgnoreButt;
@@ -55,7 +50,7 @@ namespace Sands
         GameObject itemHolder1, itemHolder2, itemHolder3;
         [SerializeField] GameObject itemHolder1Pos, itemHolder2Pos, itemHolder3Pos;
 
-
+        //global variables that help with functions
         Tradeable item1;
         Tradeable item2;
         Tradeable item3;
@@ -71,6 +66,7 @@ namespace Sands
         int randy;
         [SerializeField] private GameObject Gauge;
 
+        //Spawn person to be encountered and move person and hero towards each other
         public void Begin()
         {
              randy = UnityEngine.Random.Range(1, 4);
@@ -82,43 +78,34 @@ namespace Sands
             MoveEnemyAnimation();
         }
 
-
+        //spawns the person encounter based on randy in begin(), stops their movement and sets the skin of the person
         private void SpawnPerson()
         {
             System.Console.WriteLine(randy);
             Parallex.ShouldMove = false;
             StopHeroAnimation();
-            //instantiate a warrior mage or ranger
+            //instantiate a warrior 
             if (randy < 2)
             {
-                //make characters move and instantiate pop-up with relavent encounter information/choices
+                //make characters move and instantiate pop-up with relevant encounter information/choices
                 Hero warrior = new Warrior((Warrior)HeroClassDB.getHero(0));
                 personPrefab = (GameObject)Resources.Load(warrior.GetType().Name, typeof(GameObject));
             }
+            //instantiate a mage 
             else if (randy < 3)
             {
-                //make characters move and instantiate pop-up with relavent encounter information/choices
+                //make characters move and instantiate pop-up with relevant encounter information/choices
                 Hero mage = new Mage((Mage)HeroClassDB.getHero(1));
                 personPrefab = (GameObject)Resources.Load(mage.GetType().Name, typeof(GameObject));
             }
+            //instantiate a ranger
             else if (randy < 4)
             {
-                //make characters move and instantiate pop-up with relavent encounter information/choices
+                //make characters move and instantiate pop-up with relevant encounter information/choices
                 Hero ranger = new Ranger((Ranger)HeroClassDB.getHero(2));
                 personPrefab = (GameObject)Resources.Load(ranger.GetType().Name, typeof(GameObject));
             }
-            else if (randy < 5)
-            {
-                //make characters move and instantiate pop-up with relavent encounter information/choices
-                Hero wizard = new Wizard((Wizard)HeroClassDB.getHero(3));
-                personPrefab = (GameObject)Resources.Load(wizard.GetType().Name, typeof(GameObject));
-            }
-            else if (randy < 6)
-            {
-                //make characters move and instantiate pop-up with relavent encounter information/choices
-                Hero spearman = new Spearman((Spearman)HeroClassDB.getHero(3));
-                personPrefab = (GameObject)Resources.Load(spearman.GetType().Name, typeof(GameObject));
-            }
+            
             personPrefab.GetComponent<Hero>().SkinTire = 1;
             personPrefab.GetComponent<Hero>().setSkin(personPrefab);
             personPrefab.GetComponent<SortingGroup>().sortingOrder = 9;
@@ -126,8 +113,10 @@ namespace Sands
             instantiatedPerson = Instantiate(personPrefab.transform, personStation.position, Quaternion.Euler(0, 180, 0));
         }
 
+        //creates first person encounter pop-up and activate texts based on the randy variable
         private void activatePopup()
         {
+            //spawns warrior encounter pop up, activates a aid option if player has the money
             if (randy < 2)
             {
                 WarriorPopUp.SetActive(true);
@@ -138,6 +127,7 @@ namespace Sands
                 warriorIgnoreButt.SetActive(true);
                 warriorRobButt.SetActive(true);
             }
+            //spawns mage encounter pop up
             else if (randy < 3)
             {
                 WarriorPopUp.SetActive(true);
@@ -147,6 +137,7 @@ namespace Sands
                 mageRobbButt.SetActive(true);
                 mageTruthButt.SetActive(true);
             }
+            //spawns ranger encounter pop up activates a aid option if player has the money
             else if (randy < 4)
             {
                 WarriorPopUp.SetActive(true);
@@ -157,42 +148,25 @@ namespace Sands
                     rangerBuyButt.SetActive(true);
                 rangerIgnoreButt.SetActive(true);
             }
-            else if (randy < 5)
-            {
-                WarriorPopUp.SetActive(true);
-                wizardEncounterText.SetActive(true);
-            }
-            else if (randy < 6)
-            {
-                WarriorPopUp.SetActive(true);
-                spearmanEncounterText.SetActive(true);
-            }
         }
 
-        //generate loot from robbing him, subtract reputation of faction in nearby town
+        //generate loot from robbing person encounter, subtract reputation of faction in nearby town
         public void robHimButton()
         {
             WarriorPopUp.SetActive(false);
 
             int num = UnityEngine.Random.Range(10, 21);
             int faction = Player.LocationToTravelTo.Territory - 1;
-            Player.FactionReputation[faction] -= (ushort)num;
-           
+            Player.FactionReputation[faction] -= (ushort)num;          
             PersonEncounterFin.SetActive(true);
-          //  PersonEncounterFin.GetComponent<LootPopUp>().GenerateLootScreen();
-
             generateLoot();
             ResolutionRobText.SetActive(true);
             strangerFactionRob.text = factionName(factionID) + " - " + num;
-         //   inventoryOneAmount.text = item1.ItemName;
-         //   inventoryTwoAmount.text = item2.ItemName;
-          //  itemOneAmount.text = randomAmount.ToString();
-          //  itemTwoAmount.text = randomAmount2.ToString();
             EncounterSystem.DidRob = true;
 
         }
 
-        //lose loot from aiding him, gain reputation with faction in nearby town
+        //lose loot from aiding warrior encounter, gain reputation with faction in nearby town
         public void aidWarriorButton()
         {
             WarriorPopUp.SetActive(false);
@@ -209,14 +183,10 @@ namespace Sands
                 PlayerInventory.Money -= 1000;
                 goldAmount.text = "-1000";
 
-            }
-
-           // aidResItemName.text = "Rations - 3";
-       
-
+            }   
         }
 
-        //A fucking loot box system
+        //A loot box system that spawns loot based on rng, 1/20 chance of making value
         public void aidRangerButton()
         {     
             WarriorPopUp.SetActive(false);
@@ -244,6 +214,7 @@ namespace Sands
             goldAmount.text = " -3000";
         }
 
+        //gives player money and adds reputation to relevant faction
         public void tellMageButton()
         {
             WarriorPopUp.SetActive(false);
@@ -253,12 +224,11 @@ namespace Sands
             ResolutionAidPopup.SetActive(true);
             mageResolutionAidText.SetActive(true);
             strangerFactionResolution.text = factionName(factionID) + " + " + num;
-
             PlayerInventory.Money += 2000;
             goldAmount.text = " + 2000";
         }
 
-        //nothing happens
+        //encounter ends without any change, next party encounter will have the party reacting to this descision
         public void leaveHimButton()
         {
             EncounterSystem.DidRob = true;
@@ -267,7 +237,7 @@ namespace Sands
 
         }
 
-
+        //The lootbox system called by the aidrangerbutton, checks if player has capacity for the new items. adds specified items to inventory and loads the picture/number into the scene 
         public void lootBox(int id)
         {
             int capacity = 0;
@@ -298,12 +268,7 @@ namespace Sands
                 itemHolder3.GetComponent<ItemHolder>().priceText.text = "";
                 itemHolder3.GetComponent<ItemHolder>().countText.text = "5";
                 itemHolder3.GetComponent<ItemHolder>().iconImage.sprite = Resources.Load<Sprite>(item3.ItemName);
-
                 itemHolder3Pos.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-
-                //    aidResItemName.text = item1.ItemName;
-                //   aidResItemAmount.text = " + 5";
-
                 carrying = 0;
                 foreach (var inventoryTradeable in PlayerInventory.TradeableInventory)
                     carrying += inventoryTradeable.OwnedTradeable.Weight * inventoryTradeable.Count;              
@@ -313,7 +278,7 @@ namespace Sands
         }
 
 
-
+        //generates random loot, the picture/number of loot and places it in inventory. This is called by the rob function
         public void generateLoot()
         {
             int capacity = 0;
@@ -412,7 +377,7 @@ namespace Sands
         }
 
 
-       
+       //Faction name in pop up based on what faction encounter is
         public string factionName(int factNum)
         {
               if (factNum == 1)
@@ -425,6 +390,7 @@ namespace Sands
                 return "Nowhere";
         }
 
+        //sets the faction for the person encounter based on 50/50 chance between the towns the player is travelling between
         public int factionSetter()
         {
             int randomFaction = UnityEngine.Random.Range(1, 3);
@@ -446,6 +412,7 @@ namespace Sands
                 return factionID;
         }
 
+        //sets faction text on pop-up to relevant faction
         public void factionColour(int factNum)
         {
             if (factNum == 1)
@@ -469,6 +436,7 @@ namespace Sands
             }
         }
 
+        //moves person into the scene and activates the pop up
         private IEnumerator PersonMovement()
         {
             MovePersonInC = StartCoroutine(MovePersonIn());
@@ -478,6 +446,7 @@ namespace Sands
 
         }
 
+        //moves person into the scene and activates the pop up
         public IEnumerator MovePersonIn(float countdownValue = 1.5f)
         {
             Vector3 pos = new Vector3(6.56f, 0.08f, 0f);
@@ -510,7 +479,7 @@ namespace Sands
             StopHeroAnimation();
 
         }
-
+        //moves person out of the scene 
         public IEnumerator MovePersonOut(float countdownValue = 5f)
         {
             MoveEnemyAnimation();
@@ -552,6 +521,7 @@ namespace Sands
 
         }
 
+        //makes the hero/vehicle play their move animation
         private void MoveHeroAimation()
         {
             if (Player.HasVehicle)
@@ -561,7 +531,7 @@ namespace Sands
         }
 
 
-
+        //makes the hero/vehicle stop their move animation
         private void StopHeroAnimation()
         {
 
@@ -570,16 +540,20 @@ namespace Sands
             else
                 EncounterSystem.InstantiatedHeroes[0].GetComponent<Animator>().SetBool("Running", false);
         }
+
+        //makes the enemy play their move animation
         private void MoveEnemyAnimation()
         {
             instantiatedPerson.GetComponent<Animator>().SetBool("Running", true);
         }
 
+        //makes the enemy stop playing their move animation
         private void StopEnemyAnimation()
         {
             instantiatedPerson.GetComponent<Animator>().SetBool("Running", false);
         }
-
+        
+        //closes all pop-ups/texts/buttons/item pictures, and begins the hero and enemies movement
         private IEnumerator moveOnCoroutine()
         {
             PersonEncounterFin.SetActive(false);
@@ -600,9 +574,7 @@ namespace Sands
             Destroy(itemHolder1);
             Destroy(itemHolder2);
             Destroy(itemHolder3);
-            // aidResItemName.text = "";
             goldAmount.text = "";
-           // aidResItemAmount.text = "";
             MovePersonOutC = StartCoroutine(MovePersonOut());
             MoveHeroAimation();
             Parallex.ShouldMove = true;
@@ -611,12 +583,10 @@ namespace Sands
             EncounterSystem.ContinueFunction = true;
         }
 
-
+        //calls the move on coroutine
             public void moveOn()
-        {
-        
-            StartCoroutine(moveOnCoroutine());
-            
+        {       
+            StartCoroutine(moveOnCoroutine());           
         }
 
 

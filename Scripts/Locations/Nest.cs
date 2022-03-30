@@ -15,7 +15,7 @@ namespace Sands
         public Nest(){}
         
         //constructor
-        public Nest(int id, string name, double lattitude, double longtitude, int territory, int[] nearbyTowns, int multiplier, bool activeStatus) : base(id, name, lattitude, longtitude, territory, nearbyTowns) {
+        public Nest(int id, string name, int townTier,  int territory, int[] nearbyTowns, int multiplier, bool activeStatus) : base(id, name, townTier, territory, nearbyTowns) {
             this.multiplier = multiplier;
             this.activeStatus = activeStatus;
         }

@@ -13,14 +13,14 @@ namespace Sands {
 
         static NestDB() 
         {
-            //int id, string name, double lattitude, double longtitude, int territory, int[] nearbyTowns //multiplier
+            //int id, string name, int townTier, int territory, int[] nearbyTowns //multiplier
             nests = new List<Nest>() {
                 //Demon
-                new Nest(1, "Infernal Maw", 100, 100, 2, new int[]{4},1,false),
+                new Nest(1, "Infernal Maw", 1, 2, new int[]{4},1,false),
                 //Dragon
-                new Nest(2, "Wyrms Peak", 100,100, 3, new int[]{8},2,false),               
+                new Nest(2, "Wyrms Peak", 1, 3, new int[]{8},2,false),               
                 //Golem
-                new Nest(3, "Seared Rock", 100,100, 1, new int[]{2},3,false)
+                new Nest(3, "Seared Rock", 1, 1, new int[]{2},3,false)
             };
         }
     

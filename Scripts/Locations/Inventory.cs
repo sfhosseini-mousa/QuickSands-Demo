@@ -117,7 +117,8 @@ namespace Sands
         public void ItemOnClick(int index)
         {
             itemPopUp.SetActive(true);
-            itemTakePopUp.SetActive(false);
+            if(itemTakePopUp)
+                itemTakePopUp.SetActive(false);
 
             selectedItemIndex = index;
             selectedItem = TradeableDatabase.getTradeable(selectedItemIndex).ItemName;

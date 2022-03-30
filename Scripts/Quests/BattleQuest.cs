@@ -14,7 +14,7 @@ namespace Sands
         //second constructor seperated by adding an int, generates a BattleQuest by random chances
         public BattleQuest(int i)
         {
-            this.questName = "Battle";
+            this.questName = "Boss";
             this.questLocation = NestDB.getNest(Random.Range(0, 4));
             this.questDescription = "Defeat the " + questLocation.LocationName + " Nest";
 

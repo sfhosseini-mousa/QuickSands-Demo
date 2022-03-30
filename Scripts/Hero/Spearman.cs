@@ -7,15 +7,16 @@ namespace Sands
 {
     public class Spearman : Hero
     {
-        public Spearman(int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire) : base(damage, critChance, maxHP, currentHP, capacity, skinTire) { }
+        public Spearman(int id, int damage, int critChance, int maxHP, int currentHP, int capacity, int skinTire, bool isQuestHero) : base(id, damage, critChance, maxHP, currentHP, capacity, skinTire, isQuestHero) { }
         void Awake()
         {
-
+            this.Id = HeroClassDB.heroes[4].Id;
             this.Damage = HeroClassDB.heroes[4].Damage;
             this.CritChance = HeroClassDB.heroes[4].CritChance;
             this.MaxHP = HeroClassDB.heroes[4].MaxHP;
             this.CurrentHP = HeroClassDB.heroes[4].CurrentHP;
             this.Capacity = HeroClassDB.heroes[4].Capacity;
+            this.IsQuestHero = HeroClassDB.heroes[4].IsQuestHero;
         }
 
         //memento copy constructor
